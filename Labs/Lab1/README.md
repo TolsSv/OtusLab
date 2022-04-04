@@ -328,10 +328,35 @@ MTU         : 1500
 ```
 
 ## Результат шага 4
- В качестве результатов шагов 4 ниже приведен скриншоты пинга для:
- 1) PC-A пингует шлюз по умолчанию
- 2) PC-A пингует PC-B
- 3) PC-A пингует S2
+ В качестве результатов шагов 4 ниже выводы команды ping для:
+ 1) PC-A - шлюз по умолчанию
+ 2) PC-A - PC-B
+ 3) PC-A - S2
 
+### PC-A - шлюз по умолчанию:
+```
+84 bytes from 192.168.3.1 icmp_seq=1 ttl=255 time=0.389 ms
+84 bytes from 192.168.3.1 icmp_seq=2 ttl=255 time=0.582 ms
+84 bytes from 192.168.3.1 icmp_seq=3 ttl=255 time=0.599 ms
+84 bytes from 192.168.3.1 icmp_seq=4 ttl=255 time=0.590 ms
+84 bytes from 192.168.3.1 icmp_seq=5 ttl=255 time=0.587 ms
+```
 
+### PC-A - PC-B:
+```
+84 bytes from 192.168.4.3 icmp_seq=1 ttl=63 time=1.639 ms
+84 bytes from 192.168.4.3 icmp_seq=2 ttl=63 time=0.852 ms
+84 bytes from 192.168.4.3 icmp_seq=3 ttl=63 time=0.933 ms
+84 bytes from 192.168.4.3 icmp_seq=4 ttl=63 time=0.978 ms
+84 bytes from 192.168.4.3 icmp_seq=5 ttl=63 time=0.882 ms
+```
+
+### PC-A - S2:
+```
+84 bytes from 192.168.3.12 icmp_seq=1 ttl=255 time=0.351 ms
+84 bytes from 192.168.3.12 icmp_seq=2 ttl=255 time=0.555 ms
+84 bytes from 192.168.3.12 icmp_seq=3 ttl=255 time=0.507 ms
+84 bytes from 192.168.3.12 icmp_seq=4 ttl=255 time=0.573 ms
+84 bytes from 192.168.3.12 icmp_seq=5 ttl=255 time=0.533 ms
+```
 
