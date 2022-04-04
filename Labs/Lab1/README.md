@@ -39,3 +39,184 @@ VLAN настроенные в лабораторной работе приве�
 |           |            | S2: e0/2-3   | 
 | 8         | Native     | N/A          | 
 
+## Шаги
+
+1) Создать сеть в соответствии с топологией и настройить основные параметры устройства
+2) Создать VLAN в соответствии с таблицей и назначить их на порты коммутаторов
+3) Настроить транковый интерфейс между коммутаторами и между коммутатором и маршрутизатором
+4) Настроить маршрутизацию между VLAN на маршрутизаторе
+5) Убедиться, что маршрутизация между VLAN работает
+
+## Результаты шагов 1-4
+ В качестве результатов шагов 1-4 ниже приведен вывод show running-config коммутаторов и маршрутизатора 
+
+### Маршрутизатор R1:
+```
+Current configuration : 1304 bytes
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 13061E010803
+!
+no aaa new-model
+clock timezone msk 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+redundancy
+!
+interface Ethernet0/0
+ no ip address
+ shutdown
+!         
+interface Ethernet0/1
+ no ip address
+ shutdown
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no ip address
+!
+interface Ethernet0/3.3
+ description Management
+ encapsulation dot1Q 3
+ ip address 192.168.3.1 255.255.255.0
+!
+interface Ethernet0/3.4
+ description Operations
+ encapsulation dot1Q 4
+ ip address 192.168.4.1 255.255.255.0
+!
+interface Ethernet0/3.8
+ description Native
+ encapsulation dot1Q 8
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+control-plane
+!
+banner motd ^CAnyone accessing the device that unauthorized access is prohibited^C
+!
+line con 0
+ password 7 045802150C2E
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 070C285F4D06
+ login
+ transport input none
+!
+end
+```
+
+### Коммутатор S1:
+
+```
+Current configuration : 1472 bytes
+!
+! Last configuration change at 22:40:21 msk Mon Apr 4 2022
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname S1
+!
+boot-start-marker
+boot-end-marker
+!
+enable password 7 0822455D0A16
+!
+no aaa new-model
+clock timezone msk 3 0
+!
+no ip domain-lookup
+ip cef
+no ipv6 cef
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+interface Ethernet0/0
+ switchport access vlan 3
+ switchport mode access
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 3,4,8
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 8
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport access vlan 7
+ switchport mode access
+ shutdown
+!
+interface Ethernet0/3
+ switchport trunk allowed vlan 3,4,8
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 8
+ switchport mode trunk
+!
+interface Vlan3
+ ip address 192.168.3.11 255.255.255.0
+!
+interface Vlan4
+ no ip address
+!
+interface Vlan8
+ no ip address
+!
+ip default-gateway 192.168.3.1
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+control-plane
+!
+banner motd ^CAnyone accessing the device that unauthorized access is prohibited^C
+!
+line con 0
+ password 7 070C285F4D06
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 045802150C2E
+ login
+line vty 1 4
+ login
+!
+!
+end
+```
+
