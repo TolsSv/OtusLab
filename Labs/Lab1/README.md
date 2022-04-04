@@ -48,7 +48,7 @@ VLAN настроенные в лабораторной работе приве�
 5) Убедиться, что маршрутизация между VLAN работает
 
 ## Результаты шагов 1-4
- В качестве результатов шагов 1-4 ниже приведен вывод show running-config коммутаторов и маршрутизатора 
+ В качестве результатов шагов 1-4 ниже приведен вывод команды show running-config коммутаторов и маршрутизатора 
 
 ### Маршрутизатор R1:
 ```
@@ -219,4 +219,95 @@ line vty 1 4
 !
 end
 ```
+
+### Коммутатор S2:
+
+```
+! Last configuration change at 22:40:21 msk Mon Apr 4 2022
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname S2
+!
+boot-start-marker
+boot-end-marker
+!
+enable password 7 1511021F0725
+!
+no aaa new-model
+clock timezone msk 3 0
+!
+no ip domain-lookup
+ip cef
+no ipv6 cef
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+interface Ethernet0/0
+ switchport access vlan 4
+ switchport mode access
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 3,4,8
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 8
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport access vlan 7
+ switchport mode access
+ shutdown
+!
+interface Ethernet0/3
+ switchport access vlan 7
+ switchport mode access
+ shutdown
+!
+interface Vlan3
+ ip address 192.168.3.12 255.255.255.0
+!
+interface Vlan4
+ no ip address
+!
+interface Vlan8
+ no ip address
+!
+ip default-gateway 192.168.3.1
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!         
+control-plane
+!
+banner motd ^CAnyone accessing the DEVICE thet unauthorized access is PROHIBITED^C
+!
+line con 0
+ password 7 14141B180F0B
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 02050D480809
+ login
+line vty 1 4
+ login
+!
+end
+```
+
+## Результат шага 4
+ В качестве результатов шагов 4 ниже приведен скриншоты пинга для:
+ 1) PC-A пингует шлюз по умолчанию
+ 2) PC-A пингует PC-B
+ 3) PC-A пингует S2
+
+
 
