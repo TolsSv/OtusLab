@@ -1,4 +1,4 @@
-# Лабораторная работа №1 Router-on-a-Stick
+# Лабораторная работа №2 Развертывание коммутируемой сети с резервными каналами
 ## Цели 
 
 1) Создание сети и настройка основных параметров устройства.
@@ -105,3 +105,47 @@ line vty 0
  password 0822455D0A16
  login
 ```
+
+### Результаты шага 4
+ В качестве результатов шага 4 приведена проверка способность коммутаторов обмениваться эхо-запросами:
+ 1) S1 - S2
+ 2) S1 - S3
+ 3) S2 - S3
+ 
+#### S1 - S2:
+```
+S1#ping 192.168.1.2
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+```
+
+#### S1 - S3:
+```
+S1#ping 192.168.1.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.3, timeout is 2 seconds:
+.!!!!
+Success rate is 80 percent (4/5), round-trip min/avg/max = 1/1/1 ms
+```
+
+#### S2 - S3:
+```
+S2#ping 192.168.1.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.3, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+```
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
