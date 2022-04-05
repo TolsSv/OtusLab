@@ -297,8 +297,134 @@ Et0/1               Altn BLK 100       128.2    Shr
 Et0/3               Root FWD 100       128.4    Shr 
 ```
 
+ В результате получаем схему:
+ ![](Topoligy_lab2.2.PNG)
+
+  С учетом выходных данных, поступающих с коммутаторов, необходимо ответь на вопросы:
+  1) Какой коммутатор является корневым мостом? **S1**
+  2) Почему этот коммутатор был выбран протоколом spanning-tree в качестве корневого моста? **Из-за наименьшего MAC адреса**
+  3) Какие порты на коммутаторе являются корневыми портами? **На коммутаторах S2 и S3 порты смотрящие в сторону S1**
+  4) Какие порты на коммутаторе являются назначенными портами? **Порты корневого моста и порт e0/3 S2**
+  5) Какой порт отображается в качестве альтернативного и в настоящее время заблокирован? **Порт e0/1 S3**
+  6) Почему протокол spanning-tree выбрал этот порт в качестве невыделенного (заблокированного) порта? **Из-за наибольшего MAC адреса среди интерфейсов смотрящих в сторону корневого моста с учетом равной стоимости**
+
+## Часть 3
+
+### Шаги
+
+1) Определите коммутатор с заблокированным портом
+2) Измените стоимость порта
+3) Просмотрите изменения протокола spanning-tree
+4) Удалите изменения стоимости порта
+
+### Результаты шагов 1-3
+В качестве результатов шагов 1-3 ниже приведен вывод команды show spanning-tree коммутаторов S2 и S3
  
+#### Коммутатор S2:
+```
+S2# sh spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        2 (Ethernet0/1)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Root FWD 100       128.2    Shr 
+Et0/3               Altn BLK 100       128.4    Shr 
+```
+
+#### Коммутатор S3:
+```
+S3#sh spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        80
+             Port        4 (Ethernet0/3)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Desg BLK 100       128.2    Shr 
+Et0/3               Root FWD 80        128.4    Shr 
+```
+
+## Часть 4
+
+### Шаги
+
+1) Включить порты F0/1 и F0/3 на всех коммутаторах
+2) Подождать 30 секунд, чтобы протокол STP завершил процесс перевода порта, после чего выполнить команду show spanning-tree на коммутаторах некорневого моста
  
+### Результаты шагов 1-2
+В качестве результатов шагов 1-2 ниже приведен вывод команды show spanning-tree коммутаторов S2 и S3
  
- 
- 
+#### Коммутатор S2:
+```
+S2#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 100       128.1    Shr 
+Et0/1               Altn BLK 100       128.2    Shr 
+Et0/2               Desg FWD 100       128.3    Shr 
+Et0/3               Desg FWD 100       128.4    Shr 
+```
+
+#### Коммутатор S3:
+```
+S3#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        3 (Ethernet0/2)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Altn BLK 100       128.1    Shr 
+Et0/1               Altn BLK 100       128.2    Shr 
+Et0/2               Root FWD 100       128.3    Shr 
+Et0/3               Altn BLK 100       128.4    Shr  
+```
+
+1) Какой порт выбран протоколом STP в качестве порта корневого моста на каждом коммутаторе некорневого моста? 
+2) Почему протокол STP выбрал эти порты в качестве портов корневого моста на этих коммутаторах?
