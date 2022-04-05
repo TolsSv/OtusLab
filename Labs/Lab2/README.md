@@ -148,9 +148,154 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 3) Включить порты e0/1 и e0/3 на всех коммутаторах
 4) Отобразить данные протокола spanning-tree
 
+### Результаты шагов 1-3
+В качестве результатов шагов 1-3 ниже приведена часть вывод команды show running-config коммутаторов, соответствующиая настройкам интерфейсов
 
+#### Коммутатор S1:
+```
+interface Ethernet0/0
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ shutdown
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ shutdown
+!         
+interface Ethernet0/3
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+```
 
+#### Коммутатор S2:
+```
+interface Ethernet0/0
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ shutdown
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ shutdown
+!         
+interface Ethernet0/3
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+```
 
+#### Коммутатор S3:
+```
+interface Ethernet0/0
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ shutdown
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ shutdown
+!
+interface Ethernet0/3
+ switchport trunk allowed vlan 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+```
+
+### Результаты шага 4
+В качестве результатов шага 4 ниже приведен вывод команды show spanning-tree  коммутаторов
+ 
+#### Коммутатор S1:
+```
+S1#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.1000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Desg FWD 100       128.2    Shr 
+Et0/3               Desg FWD 100       128.4    Shr 
+```
+
+#### Коммутатор S2:
+```
+S2#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        2 (Ethernet0/1)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Root FWD 100       128.2    Shr 
+Et0/3               Desg FWD 100       128.4    Shr 
+```
+
+#### Коммутатор S3:
+```
+S3#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        4 (Ethernet0/3)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Altn BLK 100       128.2    Shr 
+Et0/3               Root FWD 100       128.4    Shr 
+```
 
  
  
