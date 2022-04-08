@@ -124,12 +124,20 @@ interface Ethernet0/3
  switchport mode trunk
 !
 interface Vlan3
+ description Management
  ip address 192.168.3.11 255.255.255.0
 !
 interface Vlan4
+ description Operations
  no ip address
 !
+interface Vlan7
+ description ParkingLot
+ no ip address
+ shutdown
+!
 interface Vlan8
+ description Native
  no ip address
 !
 ip default-gateway 192.168.3.1
@@ -158,12 +166,20 @@ interface Ethernet0/3
  shutdown
 !
 interface Vlan3
+ description Management
  ip address 192.168.3.12 255.255.255.0
 !
 interface Vlan4
+ description Operations
  no ip address
 !
+interface Vlan7
+ description ParkingLot
+ no ip address
+ shutdown
+!
 interface Vlan8
+ description Native
  no ip address
 !
 ip default-gateway 192.168.3.1
@@ -311,12 +327,20 @@ interface Ethernet0/3
  switchport mode trunk
 !
 interface Vlan3
+ description Management
  ip address 192.168.3.11 255.255.255.0
 !
 interface Vlan4
+ description Operations
  no ip address
 !
+interface Vlan7
+ description ParkingLot
+ no ip address
+ shutdown
+!
 interface Vlan8
+ description Native
  no ip address
 !
 ip default-gateway 192.168.3.1
@@ -395,12 +419,20 @@ interface Ethernet0/3
  shutdown
 !
 interface Vlan3
+ description Management
  ip address 192.168.3.12 255.255.255.0
 !
 interface Vlan4
+ description Operations
  no ip address
 !
+interface Vlan7
+ description ParkingLot
+ no ip address
+ shutdown
+!
 interface Vlan8
+ description Native
  no ip address
 !
 ip default-gateway 192.168.3.1
