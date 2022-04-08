@@ -95,33 +95,18 @@ line vty 0 4
 
 ## Часть 2. Выполнение
 
-### Настройка VLAN на коммутаторах
+### Создать VLAN на коммутаторах
 
-Необходимо создать и задать имя VLAN в соответствии с таблицей VLAN, настроить интерфейс управления, назначить шлюз по умолчанию, все неиспользуемые порты перевести в парковочный VLAN.
+Необходимо создать и задать имя VLAN в соответствии с таблицей VLAN, настроить интерфейс управления, назначить шлюз по умолчанию, все неиспользуемые порты перевести в ражим access, назначить в парковочный VLAN и отключить.
 
 После настройки VLAN коммутаторов в running-config коммутаторов появятся настройки VLAN:
+
 Коммутатор S1:
 ```
-interface Ethernet0/0
- switchport access vlan 3
- switchport mode access
-!
-interface Ethernet0/1
- switchport trunk allowed vlan 3,4,8
- switchport trunk encapsulation dot1q
- switchport trunk native vlan 8
- switchport mode trunk
-!
 interface Ethernet0/2
  switchport access vlan 7
  switchport mode access
  shutdown
-!
-interface Ethernet0/3
- switchport trunk allowed vlan 3,4,8
- switchport trunk encapsulation dot1q
- switchport trunk native vlan 8
- switchport mode trunk
 !
 interface Vlan3
  description Management
@@ -145,16 +130,6 @@ ip default-gateway 192.168.3.1
 
 Коммутатор S2:
 ```
-interface Ethernet0/0
- switchport access vlan 4
- switchport mode access
-!
-interface Ethernet0/1
- switchport trunk allowed vlan 3,4,8
- switchport trunk encapsulation dot1q
- switchport trunk native vlan 8
- switchport mode trunk
-!
 interface Ethernet0/2
  switchport access vlan 7
  switchport mode access
@@ -185,7 +160,11 @@ interface Vlan8
 ip default-gateway 192.168.3.1
 ```
 
+### Назначить VLAN на порты коммутаторов
 
+Необходимо назначить VLAN на интерфейсы коммутаторов в соответствии с таблицей VLAN.
+
+После настройки VLAN коммутаторов в running-config коммутаторов появятся настройки VLAN:
 
 ## Результаты работы в частях 1-4
  В качестве результатов шагов 1-4 ниже приведен вывод команды show running-config коммутаторов и маршрутизатора, вывод команды show ip АРМов PC-A и PC-B 
