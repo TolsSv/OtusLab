@@ -69,12 +69,50 @@ VLAN, которые необходимо настроить в лаборато
 
 #### Маршрутизатор R1
 ```
-
+service password-encryption
+!
+hostname R1
+!
+enable password 7 1511070D1739
+!
+clock timezone msk 3 0
+!
+no ip domain lookup
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 13061E010803
+ logging synchronous
+ login
+line vty 0
+ password 7 13061E010803
+ login
+ transport input none
 ```
 
 #### Маршрутизатор R2
 ```
-
+service password-encryption
+!
+hostname R1
+!
+enable password 7 00071F071748
+!
+clock timezone msk 3 0
+!
+no ip domain lookup
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 094F471A1A0A
+ logging synchronous
+ login
+line vty 0
+ password 7 0822455D0A16
+ login
+ transport input none
 ```
 
 
