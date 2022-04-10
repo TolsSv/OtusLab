@@ -95,7 +95,7 @@ line vty 0
 ```
 service password-encryption
 !
-hostname R1
+hostname R2
 !
 enable password 7 00071F071748
 !
