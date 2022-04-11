@@ -383,9 +383,159 @@ ip dhcp pool R1_Management_LAN
  lease 2 12 30
 ```
 
-В выводе команды running-config маршрутизатора R1 появятся:
+В выводе команды show ip dhcp pool маршрутизатора R1 появятся:
+
+```
+R1#show ip dhcp pool
+
+Pool R1_Client_LAN :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 62
+ Leased addresses               : 0
+ Pending event                  : none
+ 1 subnet is currently in the pool :
+ Current index        IP address range                    Leased addresses
+ 192.168.1.1          192.168.1.1      - 192.168.1.62      0
+
+Pool R1_Management_LAN :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 30
+ Leased addresses               : 0
+ Pending event                  : none
+ 1 subnet is currently in the pool :
+ Current index        IP address range                    Leased addresses
+ 192.168.1.65         192.168.1.65     - 192.168.1.94      0
+```
+
+В выводе команды show ip dhcp bindings маршрутизатора R1:
+
+```
+R1#show ip dhcp binding 
+Bindings from all pools not associated with VRF:
+IP address          Client-ID/     Lease expiration        Type
+    Hardware address/
+    User name
+```
 
 
+В выводе команды show ip dhcp server statistics маршрутизатора R1:
+
+```
+R1#show ip dhcp server statistics 
+Memory usage         25179
+Address pools        2
+Database agents      0
+Automatic bindings   0
+Manual bindings      0
+Expired bindings     0
+Malformed messages   0
+Secure arp entries   0
+
+Message              Received
+BOOTREQUEST          0
+DHCPDISCOVER         0
+DHCPREQUEST          0
+DHCPDECLINE          0
+DHCPRELEASE          0
+DHCPINFORM           0
+
+Message              Sent
+BOOTREPLY            0
+DHCPOFFER            0
+DHCPACK              0
+DHCPNAK              0
+```
+
+### Преобретение ip адреса с помощью DHCP для PC-A 
+
+Необходимо назначить на PC-A ip адрес с помощью DHCP. 
+
+В выводе команды dhcp -r АРМа PC-A представлено:
+
+```
+VPCS> dhcp -r
+DDORA IP 192.168.1.6/26 GW 192.168.1.1
+```
+
+В выводе команды dhcp -d АРМа PC-A представлено:
+
+```
+VPCS> dhcp -d
+Opcode: 1 (REQUEST)
+Client IP Address: 0.0.0.0
+Your IP Address: 0.0.0.0
+Server IP Address: 0.0.0.0
+Gateway IP Address: 0.0.0.0
+Client MAC Address: 00:50:79:66:68:02
+Option 53: Message Type = Discover
+Option 12: Host Name = VPCS1
+Option 61: Client Identifier = Hardware Type=Ethernet MAC Address = 00:50:79:66:68:02
+
+Opcode: 2 (REPLY)
+Client IP Address: 0.0.0.0
+Your IP Address: 192.168.1.6
+Server IP Address: 0.0.0.0
+Gateway IP Address: 0.0.0.0
+Client MAC Address: 00:50:79:66:68:02
+Option 53: Message Type = Offer
+Option 54: DHCP Server = 192.168.1.1
+Option 51: Lease Time = 217786
+Option 58: Renewal Time = 108893
+Option 59: Rebinding Time = 190561
+Option 1: Subnet Mask = 255.255.255.192
+Option 3: Router = 192.168.1.1
+Option 15: Domain = ccna-lab.com
+
+Opcode: 1 (REQUEST)
+Client IP Address: 192.168.1.6
+Your IP Address: 0.0.0.0
+Server IP Address: 0.0.0.0
+Gateway IP Address: 0.0.0.0
+Client MAC Address: 00:50:79:66:68:02
+Option 53: Message Type = Request
+Option 54: DHCP Server = 192.168.1.1
+Option 50: Requested IP Address = 192.168.1.6
+Option 61: Client Identifier = Hardware Type=Ethernet MAC Address = 00:50:79:66:68:02
+Option 12: Host Name = VPCS1
+
+Opcode: 2 (REPLY)
+Client IP Address: 192.168.1.6
+Your IP Address: 192.168.1.6
+Server IP Address: 0.0.0.0
+Gateway IP Address: 0.0.0.0
+Client MAC Address: 00:50:79:66:68:02
+Option 53: Message Type = Ack
+Option 54: DHCP Server = 192.168.1.1
+Option 51: Lease Time = 217800
+Option 58: Renewal Time = 108900
+Option 59: Rebinding Time = 190575
+Option 1: Subnet Mask = 255.255.255.192
+Option 3: Router = 192.168.1.1
+Option 15: Domain = ccna-lab.com
+
+ IP 192.168.1.6/26 GW 192.168.1.1
+```
+
+Чтобы убедиться, что все работает корректно создадим запрос ping с АРМ PC-A на маршрутизатор R1:
+```
+VPCS> ping 192.168.1.1 
+
+84 bytes from 192.168.1.1 icmp_seq=1 ttl=255 time=0.685 ms
+84 bytes from 192.168.1.1 icmp_seq=2 ttl=255 time=0.581 ms
+84 bytes from 192.168.1.1 icmp_seq=3 ttl=255 time=0.594 ms
+84 bytes from 192.168.1.1 icmp_seq=4 ttl=255 time=0.603 ms
+84 bytes from 192.168.1.1 icmp_seq=5 ttl=255 time=0.559 ms
+
+VPCS> ping 192.168.1.65
+
+84 bytes from 192.168.1.65 icmp_seq=1 ttl=255 time=0.462 ms
+84 bytes from 192.168.1.65 icmp_seq=2 ttl=255 time=0.561 ms
+84 bytes from 192.168.1.65 icmp_seq=3 ttl=255 time=0.632 ms
+84 bytes from 192.168.1.65 icmp_seq=4 ttl=255 time=0.623 ms
+84 bytes from 192.168.1.65 icmp_seq=5 ttl=255 time=0.633 ms
+```
 
 
 
