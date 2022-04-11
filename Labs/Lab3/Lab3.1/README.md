@@ -360,6 +360,28 @@ Sending 5, 100-byte ICMP Echos to 192.168.1.65, timeout is 2 seconds:
 Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ```
 
+### Настройка VLAN и интерфейс коммутатора S2 
+
+На коммутаторе S1 необходимо создать VLAN 1, назначить ему второй ip адрес диапазона адресов маршрутизатора R2 и настроить на коммутаторе ip адрес шлюза по умолчанию. 
+
+После настройки VLAN коммутатора S2 в running-config коммутатора появятся настройки:
+
+```
+interface Ethernet0/0
+!
+interface Ethernet0/1
+!
+interface Ethernet0/2
+!
+interface Ethernet0/3
+!
+interface Vlan1
+ ip address 192.168.1.98 255.255.255.240
+ shutdown
+!         
+ip route 0.0.0.0 0.0.0.0 192.168.1.97
+```
+
 ### Настройка DHCPv4 сервер на маршрутизаторе R1
 
 Необходимо настроить 2 пула адресов, настроенных на маршрутизаторе, при этом исключить из пула выдаваемых адресов первые 5 адресов диапазона. Для 2 пулов адресов необходимо назначить в качестве доменного имени ccna-lab.com, указать в качестве маршрута по умолчанию ip адрес маршрутизатора R1, назначить в качестве срока DHCP-аренды 2 дня 12 часов 30 минут.
@@ -368,7 +390,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 
 ```
 ip dhcp excluded-address 192.168.1.1 192.168.1.5
-ip dhcp excluded-address 192.168.1.65 192.168.1.69
+ip dhcp excluded-address 192.168.1.97 192.168.1.101
 !
 ip dhcp pool R1_Client_LAN
  network 192.168.1.0 255.255.255.192
@@ -376,9 +398,9 @@ ip dhcp pool R1_Client_LAN
  domain-name ccna-lab.com
  lease 2 12 30
 !
-ip dhcp pool R1_Management_LAN
- network 192.168.1.64 255.255.255.224
- default-router 192.168.1.65 
+ip dhcp pool R2_Client_LAN
+ network 192.168.1.96 255.255.255.240
+ default-router 192.168.1.97 
  domain-name ccna-lab.com
  lease 2 12 30
 ```
@@ -537,6 +559,138 @@ VPCS> ping 192.168.1.65
 84 bytes from 192.168.1.65 icmp_seq=5 ttl=255 time=0.633 ms
 ```
 
+### Настройка ретрансляции DHCPv4 на маршрутизаторе R2  
 
+Необходимо настроить ретрансляцию DHCPv4 на маршрутизаторе R2 на интерфейс e0/1.
+
+### Преобретение ip адреса с помощью DHCP для PC-B 
+
+Необходимо назначить на PC-B ip адрес с помощью DHCP. 
+
+В выводе команды dhcp -r АРМа PC-B представлено:
+
+```
+VPCS> dhcp -r   
+DORA IP 192.168.1.102/28 GW 192.168.1.97
+```
+
+В выводе команды dhcp -d АРМа PC-B представлено:
+
+```
+VPCS> dhcp -d
+Opcode: 1 (REQUEST)
+Client IP Address: 0.0.0.0
+Your IP Address: 0.0.0.0
+Server IP Address: 0.0.0.0
+Gateway IP Address: 0.0.0.0
+Client MAC Address: 00:50:79:66:68:06
+Option 53: Message Type = Discover
+Option 12: Host Name = VPCS1
+Option 61: Client Identifier = Hardware Type=Ethernet MAC Address = 00:50:79:66:68:06
+
+Opcode: 2 (REPLY)
+Client IP Address: 0.0.0.0
+Your IP Address: 192.168.1.102
+Server IP Address: 0.0.0.0
+Gateway IP Address: 192.168.1.97
+Client MAC Address: 00:50:79:66:68:06
+Option 53: Message Type = Offer
+Option 54: DHCP Server = 10.0.0.1
+Option 51: Lease Time = 217775
+Option 58: Renewal Time = 108887
+Option 59: Rebinding Time = 190547
+Option 1: Subnet Mask = 255.255.255.240
+Option 3: Router = 192.168.1.97
+Option 15: Domain = ccna-lab.com
+
+Opcode: 1 (REQUEST)
+Client IP Address: 192.168.1.102
+Your IP Address: 0.0.0.0
+Server IP Address: 0.0.0.0
+Gateway IP Address: 0.0.0.0
+Client MAC Address: 00:50:79:66:68:06
+Option 53: Message Type = Request
+Option 54: DHCP Server = 10.0.0.1
+Option 50: Requested IP Address = 192.168.1.102
+Option 61: Client Identifier = Hardware Type=Ethernet MAC Address = 00:50:79:66:68:06
+Option 12: Host Name = VPCS1
+
+Opcode: 2 (REPLY)
+Client IP Address: 192.168.1.102
+Your IP Address: 192.168.1.102
+Server IP Address: 0.0.0.0
+Gateway IP Address: 192.168.1.97
+Client MAC Address: 00:50:79:66:68:06
+Option 53: Message Type = Ack
+Option 54: DHCP Server = 10.0.0.1
+Option 51: Lease Time = 217800
+Option 58: Renewal Time = 108900
+Option 59: Rebinding Time = 190575
+Option 1: Subnet Mask = 255.255.255.240
+Option 3: Router = 192.168.1.97
+Option 15: Domain = ccna-lab.com
+
+ IP 192.168.1.102/28 GW 192.168.1.97
+```
+
+Чтобы убедиться, что все работает корректно создадим запрос ping с АРМ PC-B на маршрутизатор R1:
+
+```
+VPCS> ping 192.168.1.1
+
+84 bytes from 192.168.1.1 icmp_seq=1 ttl=254 time=0.512 ms
+84 bytes from 192.168.1.1 icmp_seq=2 ttl=254 time=0.739 ms
+84 bytes from 192.168.1.1 icmp_seq=3 ttl=254 time=0.653 ms
+84 bytes from 192.168.1.1 icmp_seq=4 ttl=254 time=0.682 ms
+84 bytes from 192.168.1.1 icmp_seq=5 ttl=254 time=0.761 ms
+
+VPCS> ping 192.168.1.65
+
+84 bytes from 192.168.1.65 icmp_seq=1 ttl=254 time=0.827 ms
+84 bytes from 192.168.1.65 icmp_seq=2 ttl=254 time=0.734 ms
+84 bytes from 192.168.1.65 icmp_seq=3 ttl=254 time=0.696 ms
+84 bytes from 192.168.1.65 icmp_seq=4 ttl=254 time=0.696 ms
+84 bytes from 192.168.1.65 icmp_seq=5 ttl=254 time=0.730 ms
+```
+
+В выводе команды show ip dhcp binding маршрутизатора R1 представлено:
+
+```
+R1#show ip dhcp binding 
+Bindings from all pools not associated with VRF:
+IP address          Client-ID/     Lease expiration        Type
+    Hardware address/
+    User name
+192.168.1.6         0100.5079.6668.02       Apr 13 2022 05:32 PM    Automatic
+192.168.1.102       0100.5079.6668.06       Apr 13 2022 06:05 PM    Automatic
+```
+
+В выводе команды show ip dhcp server statistics маршрутизатора R1 представлено:
+
+```
+R1#show ip dhcp server statistics 
+Memory usage         43402
+Address pools        2
+Database agents      0
+Automatic bindings   2
+Manual bindings      0
+Expired bindings     0
+Malformed messages   0
+Secure arp entries   0
+
+Message              Received
+BOOTREQUEST          0
+DHCPDISCOVER         8
+DHCPREQUEST          6
+DHCPDECLINE          0
+DHCPRELEASE          0
+DHCPINFORM           0
+
+Message              Sent
+BOOTREPLY            0
+DHCPOFFER            6
+DHCPACK              6
+DHCPNAK              0
+```
 
 
