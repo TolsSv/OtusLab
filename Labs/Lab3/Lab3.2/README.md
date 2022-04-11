@@ -97,3 +97,61 @@ line vty 0
  login
  transport input none
 ```
+
+
+
+
+
+### Базовая настройка коммутаторов
+
+В качестве базовой настройки коммутаторов необходимо произвести аналогичные настройки как при базовой настройке маршрутизаторов. 
+
+После базовой настройки коммутатов в running-config коммутаторов появятся настройки:
+
+#### Коммутатор S1
+```
+service password-encryption
+!
+hostname S1
+!
+enable password 7 0307570A151C
+!
+clock timezone msk 3 0
+!
+no ip domain lookup
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 110A1016141D
+ logging synchronous
+ login
+line vty 0
+ password 7 121A0C041104
+ login
+```
+
+#### Коммутатор S2
+```
+service password-encryption
+!
+hostname S1
+!
+enable password 7 01100A054818
+!
+clock timezone msk 3 0
+!
+no ip domain lookup
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 05080F1C2243
+ logging synchronous
+ login
+line vty 0
+ password 7 14141B180F0B
+ login
+```
+
+
