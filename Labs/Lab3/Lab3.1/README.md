@@ -276,3 +276,53 @@ line vty 0
  password 7 14141B180F0B
  login
 ```
+
+### Настройка VLAN и интерфейсов коммутатора S1 
+
+Необходимо создать и задать имя VLAN в соответствии с таблицей VLAN и ip адресов, назначить ip адрес на vlan управления, назначить шлюз по умолчанию, все неиспользуемые порты перевести в ражим access, назначить в парковочный VLAN и отключить.
+
+После настройки VLAN коммутатора S1 в running-config коммутатора появятся настройки VLAN:
+
+```
+interface Ethernet0/0
+ switchport access vlan 100
+ switchport mode access
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 100,200,1000
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 1000
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ !
+ interface Ethernet0/3
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+!
+interface Vlan100
+ description Clients
+ no ip address
+!
+interface Vlan200
+ description Management
+ ip address 192.168.1.66 255.255.255.224
+!
+interface Vlan999
+ description Parking_Lot
+ no ip address
+ shutdown
+ !
+ ip route 0.0.0.0 0.0.0.0 192.168.1.65
+```
+
+
+
+
+
+
+
