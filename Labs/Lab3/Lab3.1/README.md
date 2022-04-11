@@ -279,7 +279,7 @@ line vty 0
 
 ### Настройка VLAN и интерфейсов коммутатора S1 
 
-Необходимо создать и задать имя VLAN в соответствии с таблицей VLAN и ip адресов, назначить ip адрес на vlan управления, назначить шлюз по умолчанию, все неиспользуемые порты перевести в ражим access, назначить в парковочный VLAN и отключить.
+Необходимо создать и задать имя VLAN в соответствии с таблицей VLAN и ip адресов, назначить ip адрес на vlan управления, назначить шлюз по умолчанию, все неиспользуемые порты перевести в ражим access, назначить в парковочный VLAN и отключить. Необходимо назначить VLAN на интерфейсы в соответствии с таблицей vlan. Интерфейс e0/1 необходимо перевести в режим trunk, назначить 1000 VLAN в качестве vlan по умолчанию и назначить необходимые vlan для передачи. Необходимо назначить на коммутатор ip адрес шлюза по умолчанию. 
 
 После настройки VLAN коммутатора S1 в running-config коммутатора появятся настройки VLAN:
 
@@ -320,9 +320,36 @@ interface Vlan999
  ip route 0.0.0.0 0.0.0.0 192.168.1.65
 ```
 
+В выводе команды show interfaces trunk коммутатора появится:
 
+```
+S1#show interfaces trunk 
 
+Port        Mode             Encapsulation  Status        Native vlan
+Et0/1       on               802.1q         trunking      1000
 
+Port        Vlans allowed on trunk
+Et0/1       100,200,1000
 
+Port        Vlans allowed and active in management domain
+Et0/1       100,200
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Et0/1       100,200
+```
+
+В выводе команды show ip interface brief коммутатора появится:
+
+```
+S1#show ip interface brief 
+Interface              IP-Address      OK? Method Status                Protocol
+Ethernet0/0            unassigned      YES unset  up                    up      
+Ethernet0/1            unassigned      YES unset  up                    up      
+Ethernet0/2            unassigned      YES unset  administratively down down    
+Ethernet0/3            unassigned      YES unset  administratively down down    
+Vlan100                unassigned      YES unset  up                    up      
+Vlan200                192.168.1.66    YES manual up                    up      
+Vlan999                unassigned      YES unset  administratively down down  
+```
 
 
