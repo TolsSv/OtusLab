@@ -320,6 +320,20 @@ interface Vlan999
  ip route 0.0.0.0 0.0.0.0 192.168.1.65
 ```
 
+В выводе команды show ip interface brief коммутатора появится:
+
+```
+S1#show ip interface brief 
+Interface              IP-Address      OK? Method Status                Protocol
+Ethernet0/0            unassigned      YES unset  up                    up      
+Ethernet0/1            unassigned      YES unset  up                    up      
+Ethernet0/2            unassigned      YES unset  administratively down down    
+Ethernet0/3            unassigned      YES unset  administratively down down    
+Vlan100                unassigned      YES unset  up                    up      
+Vlan200                192.168.1.66    YES manual up                    up      
+Vlan999                unassigned      YES unset  administratively down down  
+```
+
 В выводе команды show interfaces trunk коммутатора появится:
 
 ```
@@ -338,18 +352,12 @@ Port        Vlans in spanning tree forwarding state and not pruned
 Et0/1       100,200
 ```
 
-В выводе команды show ip interface brief коммутатора появится:
-
+Чтобы убедиться, что статический маршрут работает произведем ping с коммутатора S1 на маршрутизатор R1:
 ```
-S1#show ip interface brief 
-Interface              IP-Address      OK? Method Status                Protocol
-Ethernet0/0            unassigned      YES unset  up                    up      
-Ethernet0/1            unassigned      YES unset  up                    up      
-Ethernet0/2            unassigned      YES unset  administratively down down    
-Ethernet0/3            unassigned      YES unset  administratively down down    
-Vlan100                unassigned      YES unset  up                    up      
-Vlan200                192.168.1.66    YES manual up                    up      
-Vlan999                unassigned      YES unset  administratively down down  
+S1#ping 192.168.1.65
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.65, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ```
-
 
