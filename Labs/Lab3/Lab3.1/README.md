@@ -134,4 +134,15 @@ Ethernet0/2                unassigned      YES NVRAM  administratively down down
 Ethernet0/3                unassigned      YES NVRAM  administratively down down 
 ```
 
+#### Маршрутизатор R2
+```
+R2#sh ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+Ethernet0/0                10.0.0.2        YES manual up                    up      
+Ethernet0/1                192.168.1.97    YES manual up                    up      
+Ethernet0/2                unassigned      YES NVRAM  administratively down down    
+Ethernet0/3                unassigned      YES NVRAM  administratively down down 
+```
+
+
 
