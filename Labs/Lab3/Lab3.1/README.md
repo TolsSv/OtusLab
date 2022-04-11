@@ -115,5 +115,23 @@ line vty 0
  transport input none
 ```
 
+### Настройка портов маршрутизаторов
+
+Необходимо создать подинтерфейсы в соответствии с таблицей адресов, назначить ip адрес и описание интерфейсу, включить подключенные интерфейсы.
+
+В выводе команды show ip interface brief маршрутизаторов появится:
+
+#### Маршрутизатор R1
+```
+R1# show ip interface brief
+Interface                  IP-Address      OK? Method Status                Protocol
+Ethernet0/0                10.0.0.1        YES manual up                    up      
+Ethernet0/1                unassigned      YES NVRAM  up                    up      
+Ethernet0/1.100            192.168.1.1     YES manual up                    up      
+Ethernet0/1.200            192.168.1.65    YES manual up                    up      
+Ethernet0/1.1000           unassigned      YES unset  up                    up      
+Ethernet0/2                unassigned      YES NVRAM  administratively down down    
+Ethernet0/3                unassigned      YES NVRAM  administratively down down 
+```
 
 
