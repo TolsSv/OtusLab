@@ -224,6 +224,55 @@ Sending 5, 100-byte ICMP Echos to 10.0.0.2, timeout is 2 seconds:
 Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ```
 
+### Базовая настройка коммутаторов
 
 
+В качестве базовой настройки коммутаторов необходимо произвести аналогичные настройки как при базовой настройке коммутаторов. 
 
+После базовой настройки коммутатов в running-config коммутаторов появятся настройки:
+
+#### Коммутатор S1
+```
+service password-encryption
+!
+hostname S1
+!
+enable password 7 0307570A151C
+!
+clock timezone msk 3 0
+!
+no ip domain lookup
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 045802150C2E
+ logging synchronous
+ login
+line vty 0
+ password 7 13061E010803
+ login
+```
+
+#### Коммутатор S2
+```
+service password-encryption
+!
+hostname S1
+!
+enable password 7 0205085A1815
+!
+clock timezone msk 3 0
+!
+no ip domain lookup
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 01100F175804
+ logging synchronous
+ login
+line vty 0
+ password 7 14141B180F0B
+ login
+```
