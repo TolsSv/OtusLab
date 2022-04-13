@@ -66,12 +66,10 @@ banner motd ^CUnautorized access is prohibited^C
 !
 line con 0
  password 7 104D000A0618
- logging synchronous
  login
 line vty 0
  password 7 01100F175804
  login
- transport input none
 ```
 
 #### Маршрутизатор R2
@@ -90,12 +88,10 @@ banner motd ^CUnautorized access is prohibited^C
 !
 line con 0
  password 7 094F471A1A0A
- logging synchronous
  login
 line vty 0
  password 7 094F471A1A0A
  login
- transport input none
 ```
 
 ### Настройка портов маршрутизаторов
@@ -138,7 +134,6 @@ banner motd ^CUnautorized access is prohibited^C
 !
 line con 0
  password 7 110A1016141D
- logging synchronous
  login
 line vty 0
  password 7 121A0C041104
@@ -161,7 +156,6 @@ banner motd ^CUnautorized access is prohibited^C
 !
 line con 0
  password 7 05080F1C2243
- logging synchronous
  login
 line vty 0
  password 7 14141B180F0B
