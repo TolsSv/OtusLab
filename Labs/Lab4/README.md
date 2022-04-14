@@ -243,18 +243,20 @@
 
 Информация о VLAN разработанных в хое лабораторной работы представленна в таблице:
 
-| VLAN      | Имя         | Интерфейсы                  |
-| ----------|-------------| ----------------------------|
-| 1         | N/A         | S2: e0/0                    | 
-| 100       | Clients     | S1: e0/0                    | 
-| 200       | Management  | S1: VLAN 200                | 
-| 999       | Parking_Lot | S1: e0/2-3                  | 
-| 1000      | Native      | N/A                         | 
-| 1         | N/A         | S2: e0/0                    | 
-| 100       | Clients     | S1: e0/0                    | 
-| 200       | Management  | S1: VLAN 200                | 
-| 999       | Parking_Lot | S1: e0/2-3                  | 
-| 1000      | Native      | N/A                         | 
+| VLAN      | Имя          | Интерфейсы                       |
+| ----------|--------------| ---------------------------------|
+| 1         | N/A          | N/A                              | 
+| 22        | Kitorn       | R22: loopback                    | 
+| 21        | Lamas        | R21: loopback                    | 
+| 27        | Labitananga  | R27: loopback                    |
+| 28        | Chokurdah    | R28: e0/2; SW29: 0/2             |
+| 520       | Triada       | R23: e0/1, e0/2; R24: e0/1, e0/2 |
+|           |              | R25: e0/0, e0/2; R26: e0/0, e0/2 |
+| 1         | N/A          | S2: e0/0                         | 
+| 100       | Clients      | S1: e0/0                         | 
+| 800       | Management   |                                  | 
+| 999       | Parking_Lot  | S1: e0/2-3                       | 
+| 1000      | Native       | N/A                              | 
 
 
 
