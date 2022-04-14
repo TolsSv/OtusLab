@@ -96,7 +96,7 @@ line vty 0
 
 ### Базовая настройка коммутаторов
 
-В качестве базовой настройки коммутаторов необходимо произвести аналогичные настройки как при базовой настройке маршрутизаторов. ВЫКЛЮЧИТЬ НЕИСПОЛЬЗКУЕМЫЕ ПОРТЫ
+В качестве базовой настройки коммутаторов необходимо произвести аналогичные настройки как при базовой настройке маршрутизаторов, а также выключить неиспользуемые порты.
 
 После базовой настройки коммутатов в running-config коммутаторов появятся настройки:
 
@@ -111,6 +111,12 @@ enable password 7 0307570A151C
 clock timezone msk 3 0
 !
 no ip domain lookup
+!
+interface Ethernet0/2
+ shutdown
+!
+interface Ethernet0/3
+ shutdown
 !
 banner motd ^CUnautorized access is prohibited^C
 !
@@ -133,6 +139,12 @@ enable password 7 01100A054818
 clock timezone msk 3 0
 !
 no ip domain lookup
+!
+interface Ethernet0/2
+ shutdown
+!
+interface Ethernet0/3
+ shutdown
 !
 banner motd ^CUnautorized access is prohibited^C
 !
