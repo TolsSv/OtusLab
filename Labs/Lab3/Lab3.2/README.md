@@ -214,7 +214,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 
 ## Часть 2. Проверка назначения IPv6 адреса на АРМ c помощью технологии SLAAC и маршрутизатора R1  
 
-Чтобы удостовериться, что АРМ сшенерировал IPv6 адрес из подсети маршрутизатора R1 с помощью технологии SLAAC введем show ipv6 на PC-A
+Чтобы удостовериться, что АРМ сгенерировал IPv6 адрес из подсети маршрутизатора R1 с помощью технологии SLAAC введем show ipv6 на PC-A
 
 ```
 VPCS> show ipv6
@@ -335,7 +335,7 @@ DHCPv6 Client DUID..............: 00-01-00-01-9D-99-EB-D2-00-D0-58-41-05-4B
 
 ```
 R2(config-if)#ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0/0 
-                                        ^
+                        ^
 % Invalid input detected at '^' marker.
 R2(config-if)#
 ```
