@@ -169,15 +169,73 @@
 |            |            | IPv6            |                         |               | Триада R25      |
 |            |            | IPv6 Link-Local |                         |               | Триада R25      |
 | **Чокурдах**                                                                                          |
-| R26        | e0/0       | IPv4            |                         |               | R26 - R24       |
-|            |            | IPv6            |                         |               | R26 - R24       |
-|            |            | IPv6 Link-Local |                         |               | R26 - R24       |
-|            | e0/1       | IPv4            |                         |               | Чокурдах R28    |
-|            |            | IPv6            |                         |               | Чокурдах R28    |
-|            |            | IPv6 Link-Local |                         |               | Чокурдах R28    |
-|            | e0/2       | IPv4            |                         |               | R26 - R25       |
-|            |            | IPv6            |                         |               | R26 - R25       |
-|            |            | IPv6 Link-Local |                         |               | R26 - R25       |
+| R28        | e0/0       | IPv4            |                         |               | Триада R26      |
+|            |            | IPv6            |                         |               | Триада R26      |
+|            |            | IPv6 Link-Local |                         |               | Триада R26      |
+|            | e0/1       | IPv4            |                         |               | Триада R25      |
+|            |            | IPv6            |                         |               | Триада R25      |
+|            |            | IPv6 Link-Local |                         |               | Триада R25      |
+|            | e0/2       | IPv4            |                         |               | R28 - SW29      |
+|            |            | IPv6            |                         |               | R28 - SW29      |
+|            |            | IPv6 Link-Local |                         |               | R28 - SW29      |
+| SW29       | e0/2       | IPv4            |                         |               | SW29 - R28      |
+|            |            | IPv6            |                         |               | SW29 - R28      |
+|            |            | IPv6 Link-Local |                         |               | SW29 - R28      |
+| VPC30      | eth0       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| VPC31      | eth0       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| **Санкт-Петербург**                                                                                   |
+| R18        | e0/0       | IPv4            |                         |               | R18 - R16       |
+|            |            | IPv6            |                         |               | R18 - R16       |
+|            |            | IPv6 Link-Local |                         |               | R18 - R16       |
+|            | e0/1       | IPv4            |                         |               | R18 - R17       |
+|            |            | IPv6            |                         |               | R18 - R17       |
+|            |            | IPv6 Link-Local |                         |               | R18 - R17       |
+|            | e0/2       | IPv4            |                         |               | Триада R24      |
+|            |            | IPv6            |                         |               | Триада R24      |
+|            |            | IPv6 Link-Local |                         |               | Триада R24      |
+|            | e0/3       | IPv4            |                         |               | Триада R26      |
+|            |            | IPv6            |                         |               | Триада R26      |
+|            |            | IPv6 Link-Local |                         |               | Триада R26      |
+| R17        | e0/0       | IPv4            |                         |               | R17 - SW9       |
+|            |            | IPv6            |                         |               | R17 - SW9       |
+|            |            | IPv6 Link-Local |                         |               | R17 - SW9       |
+|            | e0/1       | IPv4            |                         |               | R17 - R18       |
+|            |            | IPv6            |                         |               | R17 - R18       |
+|            |            | IPv6 Link-Local |                         |               | R17 - R18       |
+|            | e0/2       | IPv4            |                         |               | R17 - SW10      |
+|            |            | IPv6            |                         |               | R17 - SW10      |
+|            |            | IPv6 Link-Local |                         |               | R17 - SW10      |
+| R16        | e0/0       | IPv4            |                         |               | R16 - SW10      |
+|            |            | IPv6            |                         |               | R16 - SW10      |
+|            |            | IPv6 Link-Local |                         |               | R16 - SW10      |
+|            | e0/1       | IPv4            |                         |               | R16 - R18       |
+|            |            | IPv6            |                         |               | R16 - R18       |
+|            |            | IPv6 Link-Local |                         |               | R16 - R18       |
+|            | e0/2       | IPv4            |                         |               | R16 - SW9       |
+|            |            | IPv6            |                         |               | R16 - SW9       |
+|            |            | IPv6 Link-Local |                         |               | R16 - SW9       |
+|            | e0/3       | IPv4            |                         |               | R16 - R32       |
+|            |            | IPv6            |                         |               | R16 - R32       |
+|            |            | IPv6 Link-Local |                         |               | R16 - R32       |
+| R32        | e0/0       | IPv4            |                         |               | R32 - R16       |
+|            |            | IPv6            |                         |               | R32 - R16       |
+|            |            | IPv6 Link-Local |                         |               | R32 - R16       |
+| SW9        | e0/X       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| SW10       | e0/X       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| VPC30      | eth0       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| VPC31      | eth0       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
 
 
 
