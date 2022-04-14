@@ -23,63 +23,163 @@
 
 В ходе выполнения лабораторной работы было разработано адресное пространство, представленное в таблице:
 
-| Устройство | Интерфейс  | Тип ip адреса   | IP адрес                | Маска подсети | Описание   |
-| ---------- | -----------| ----------------|-------------------------|---------------|------------|
-| **Москва**                                                                                       |
-| R14        | e0/2       | IPv4            |                         |               | В Киторн   |
-|            |            | IPv6            |                         |               | В Киторн   |
-|            |            | IPv6 Link-Local |                         |               | В Киторн   |
-|            | e0/3       | IPv4            |                         |               | R14 - R19  |
-|            |            | IPv6            |                         |               | R14 - R19  |
-|            |            | IPv6 Link-Local |                         |               | R14 - R19  |
-|            | e0/0       | IPv4            |                         |               | R14 - R12  |
-|            |            | IPv6            |                         |               | R14 - R12  |
-|            |            | IPv6 Link-Local |                         |               | R14 - R12  |
-|            | e0/1       | IPv4            |                         |               | R14 - R13  |
-|            |            | IPv6            |                         |               | R14 - R13  |
-|            |            | IPv6 Link-Local |                         |               | R14 - R13  |
-| R15        | e0/2       | IPv4            |                         |               | В Ламас    |
-|            |            | IPv6            |                         |               | В Ламас    |
-|            |            | IPv6 Link-Local |                         |               | В Ламас    |
-|            | e0/3       | IPv4            |                         |               | R15 - R20  |
-|            |            | IPv6            |                         |               | R15 - R20  |
-|            |            | IPv6 Link-Local |                         |               | R15 - R20  |
-|            | e0/0       | IPv4            |                         |               | R15 - R13  |
-|            |            | IPv6            |                         |               | R15 - R13  |
-|            |            | IPv6 Link-Local |                         |               | R15 - R13  |
-|            | e0/1       | IPv4            |                         |               | R15 - R12  |
-|            |            | IPv6            |                         |               | R15 - R12  |
-|            |            | IPv6 Link-Local |                         |               | R15 - R12  |
-| R19        | e0/0       | IPv4            |                         |               | R19 - R14  |
-|            |            | IPv6            |                         |               | R19 - R14  |
-|            |            | IPv6 Link-Local |                         |               | R19 - R14  |
-| R20        | e0/0       | IPv4            |                         |               | R20 - R15  |
-|            |            | IPv6            |                         |               | R20 - R15  |
-|            |            | IPv6 Link-Local |                         |               | R20 - R15  |
-| R12        | e0/2       | IPv4            |                         |               | R12 - R14  |
-|            |            | IPv6            |                         |               | R12 - R14  |
-|            |            | IPv6 Link-Local |                         |               | R12 - R14  |
-|            | e0/3       | IPv4            |                         |               | R12 - R15  |
-|            |            | IPv6            |                         |               | R12 - R15  |
-|            |            | IPv6 Link-Local |                         |               | R12 - R15  |
-|            | e0/0       | IPv4            |                         |               | R12 - SW4  |
-|            |            | IPv6            |                         |               | R12 - SW4  |
-|            |            | IPv6 Link-Local |                         |               | R12 - SW4  |
-|            | e0/1       | IPv4            |                         |               | R12 - SW5  |
-|            |            | IPv6            |                         |               | R12 - SW5  |
-|            |            | IPv6 Link-Local |                         |               | R12 - SW5  |
-| R13        | e0/2       | IPv4            |                         |               | R13 - R15  |
-|            |            | IPv6            |                         |               | R13 - R15  |
-|            |            | IPv6 Link-Local |                         |               | R13 - R15  |
-|            | e0/3       | IPv4            |                         |               | R13 - R14  |
-|            |            | IPv6            |                         |               | R13 - R14  |
-|            |            | IPv6 Link-Local |                         |               | R13 - R14  |
-|            | e0/0       | IPv4            |                         |               | R13 - SW5  |
-|            |            | IPv6            |                         |               | R13 - SW5  |
-|            |            | IPv6 Link-Local |                         |               | R13 - SW5  |
-|            | e0/1       | IPv4            |                         |               | R13 - SW4  |
-|            |            | IPv6            |                         |               | R13 - SW4  |
-|            |            | IPv6 Link-Local |                         |               | R13 - SW4  |
+| Устройство | Интерфейс  | Тип ip адреса   | IP адрес                | Маска подсети | Описание        |
+| ---------- | -----------| ----------------|-------------------------|---------------|-----------------|
+| **Москва**                                                                                            |
+| R14        | e0/2       | IPv4            |                         |               | Киторн          |
+|            |            | IPv6            |                         |               | Киторн          |
+|            |            | IPv6 Link-Local |                         |               | Киторн          |
+|            | e0/3       | IPv4            |                         |               | R14 - R19       |
+|            |            | IPv6            |                         |               | R14 - R19       |
+|            |            | IPv6 Link-Local |                         |               | R14 - R19       |
+|            | e0/0       | IPv4            |                         |               | R14 - R12       |
+|            |            | IPv6            |                         |               | R14 - R12       |
+|            |            | IPv6 Link-Local |                         |               | R14 - R12       |
+|            | e0/1       | IPv4            |                         |               | R14 - R13       |
+|            |            | IPv6            |                         |               | R14 - R13       |
+|            |            | IPv6 Link-Local |                         |               | R14 - R13       |
+| R15        | e0/2       | IPv4            |                         |               | Ламас           |
+|            |            | IPv6            |                         |               | Ламас           |
+|            |            | IPv6 Link-Local |                         |               | Ламас           |
+|            | e0/3       | IPv4            |                         |               | R15 - R20       |
+|            |            | IPv6            |                         |               | R15 - R20       |
+|            |            | IPv6 Link-Local |                         |               | R15 - R20       |
+|            | e0/0       | IPv4            |                         |               | R15 - R13       |
+|            |            | IPv6            |                         |               | R15 - R13       |
+|            |            | IPv6 Link-Local |                         |               | R15 - R13       |
+|            | e0/1       | IPv4            |                         |               | R15 - R12       |
+|            |            | IPv6            |                         |               | R15 - R12       |
+|            |            | IPv6 Link-Local |                         |               | R15 - R12       |
+| R19        | e0/0       | IPv4            |                         |               | R19 - R14       |
+|            |            | IPv6            |                         |               | R19 - R14       |
+|            |            | IPv6 Link-Local |                         |               | R19 - R14       |
+| R20        | e0/0       | IPv4            |                         |               | R20 - R15       |
+|            |            | IPv6            |                         |               | R20 - R15       |
+|            |            | IPv6 Link-Local |                         |               | R20 - R15       |
+| R12        | e0/2       | IPv4            |                         |               | R12 - R14       |
+|            |            | IPv6            |                         |               | R12 - R14       |
+|            |            | IPv6 Link-Local |                         |               | R12 - R14       |
+|            | e0/3       | IPv4            |                         |               | R12 - R15       |
+|            |            | IPv6            |                         |               | R12 - R15       |
+|            |            | IPv6 Link-Local |                         |               | R12 - R15       |
+|            | e0/0       | IPv4            |                         |               | R12 - SW4       |
+|            |            | IPv6            |                         |               | R12 - SW4       |
+|            |            | IPv6 Link-Local |                         |               | R12 - SW4       |
+|            | e0/1       | IPv4            |                         |               | R12 - SW5       |
+|            |            | IPv6            |                         |               | R12 - SW5       |
+|            |            | IPv6 Link-Local |                         |               | R12 - SW5       |
+| R13        | e0/2       | IPv4            |                         |               | R13 - R15       |
+|            |            | IPv6            |                         |               | R13 - R15       |
+|            |            | IPv6 Link-Local |                         |               | R13 - R15       |
+|            | e0/3       | IPv4            |                         |               | R13 - R14       |
+|            |            | IPv6            |                         |               | R13 - R14       |
+|            |            | IPv6 Link-Local |                         |               | R13 - R14       |
+|            | e0/0       | IPv4            |                         |               | R13 - SW5       |
+|            |            | IPv6            |                         |               | R13 - SW5       |
+|            |            | IPv6 Link-Local |                         |               | R13 - SW5       |
+|            | e0/1       | IPv4            |                         |               | R13 - SW4       |
+|            |            | IPv6            |                         |               | R13 - SW4       |
+|            |            | IPv6 Link-Local |                         |               | R13 - SW4       |
+| SW4        | e0/X       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| SW5        | e0/X       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| SW3        | e0/X       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| SW2        | e0/X       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| VPC1       | eth0       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| VPC7       | eth0       | IPv4            |                         |               |                 |
+|            |            | IPv6            |                         |               |                 |
+|            |            | IPv6 Link-Local |                         |               |                 |
+| **Киторн**                                                                                            |
+| R22        | e0/0       | IPv4            |                         |               | Москву R14      |
+|            |            | IPv6            |                         |               | Москву R14      |
+|            |            | IPv6 Link-Local |                         |               | Москву R14      |
+|            | e0/1       | IPv4            |                         |               | Ламас           |
+|            |            | IPv6            |                         |               | Ламас           |
+|            |            | IPv6 Link-Local |                         |               | Ламас           |
+|            | e0/2       | IPv4            |                         |               | Триада R23      |
+|            |            | IPv6            |                         |               | Триада R23      | 
+|            |            | IPv6 Link-Local |                         |               | Триада R23      |
+| **Ламас**                                                                                             |
+| R21        | e0/0       | IPv4            |                         |               | Москву R15      |
+|            |            | IPv6            |                         |               | Москву R15      |
+|            |            | IPv6 Link-Local |                         |               | Москву R15      |
+|            | e0/1       | IPv4            |                         |               | Киторн          |
+|            |            | IPv6            |                         |               | Киторн          |
+|            |            | IPv6 Link-Local |                         |               | Киторн          | 
+|            | e0/2       | IPv4            |                         |               | Триада R24      |
+|            |            | IPv6            |                         |               | Триада R24      |
+|            |            | IPv6 Link-Local |                         |               | Триада R24      |
+| **Триада**                                                                                            |
+| R23        | e0/0       | IPv4            |                         |               | Киторн          |
+|            |            | IPv6            |                         |               | Киторн          |
+|            |            | IPv6 Link-Local |                         |               | Киторн          |
+|            | e0/1       | IPv4            |                         |               | R23 - R25       |
+|            |            | IPv6            |                         |               | R23 - R25       |
+|            |            | IPv6 Link-Local |                         |               | R23 - R25       |
+|            | e0/2       | IPv4            |                         |               | R23 - R24       |
+|            |            | IPv6            |                         |               | R23 - R24       |
+|            |            | IPv6 Link-Local |                         |               | R23 - R24       |
+| R24        | e0/0       | IPv4            |                         |               | Ламас           |
+|            |            | IPv6            |                         |               | Ламас           |
+|            |            | IPv6 Link-Local |                         |               | Ламас           |
+|            | e0/1       | IPv4            |                         |               | R24 - R26       |
+|            |            | IPv6            |                         |               | R24 - R26       |
+|            |            | IPv6 Link-Local |                         |               | R24 - R26       |
+|            | e0/2       | IPv4            |                         |               | R24 - R23       |
+|            |            | IPv6            |                         |               | R24 - R23       |
+|            |            | IPv6 Link-Local |                         |               | R24 - R23       |
+|            | e0/3       | IPv4            |                         |               | СПб R18         |
+|            |            | IPv6            |                         |               | СПб R18         |
+|            |            | IPv6 Link-Local |                         |               | СПб R18         |
+| R25        | e0/0       | IPv4            |                         |               | R25 - R23       |
+|            |            | IPv6            |                         |               | R25 - R23       |
+|            |            | IPv6 Link-Local |                         |               | R25 - R23       |
+|            | e0/1       | IPv4            |                         |               | Лабытнанги R27  |
+|            |            | IPv6            |                         |               | Лабытнанги R27  |
+|            |            | IPv6 Link-Local |                         |               | Лабытнанги R27  |
+|            | e0/2       | IPv4            |                         |               | R25 - R26       |
+|            |            | IPv6            |                         |               | R25 - R26       |
+|            |            | IPv6 Link-Local |                         |               | R25 - R26       |
+|            | e0/3       | IPv4            |                         |               | Чокурдах R28    |
+|            |            | IPv6            |                         |               | Чокурдах R28    |
+|            |            | IPv6 Link-Local |                         |               | Чокурдах R28    |
+| R26        | e0/0       | IPv4            |                         |               | R26 - R24       |
+|            |            | IPv6            |                         |               | R26 - R24       |
+|            |            | IPv6 Link-Local |                         |               | R26 - R24       |
+|            | e0/1       | IPv4            |                         |               | Чокурдах R28    |
+|            |            | IPv6            |                         |               | Чокурдах R28    |
+|            |            | IPv6 Link-Local |                         |               | Чокурдах R28    |
+|            | e0/2       | IPv4            |                         |               | R26 - R25       |
+|            |            | IPv6            |                         |               | R26 - R25       |
+|            |            | IPv6 Link-Local |                         |               | R26 - R25       |
+|            | e0/3       | IPv4            |                         |               | СПб R18         |
+|            |            | IPv6            |                         |               | СПб R18         |
+|            |            | IPv6 Link-Local |                         |               | СПб R18         |
+| **Лабытнанги**                                                                                        |
+| R27        | e0/0       | IPv4            |                         |               | Триада R25      |
+|            |            | IPv6            |                         |               | Триада R25      |
+|            |            | IPv6 Link-Local |                         |               | Триада R25      |
+| **Чокурдах**                                                                                          |
+| R26        | e0/0       | IPv4            |                         |               | R26 - R24       |
+|            |            | IPv6            |                         |               | R26 - R24       |
+|            |            | IPv6 Link-Local |                         |               | R26 - R24       |
+|            | e0/1       | IPv4            |                         |               | Чокурдах R28    |
+|            |            | IPv6            |                         |               | Чокурдах R28    |
+|            |            | IPv6 Link-Local |                         |               | Чокурдах R28    |
+|            | e0/2       | IPv4            |                         |               | R26 - R25       |
+|            |            | IPv6            |                         |               | R26 - R25       |
+|            |            | IPv6 Link-Local |                         |               | R26 - R25       |
+
+
 
 ### Таблица VLAN
 
