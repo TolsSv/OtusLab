@@ -222,6 +222,109 @@ Where did the host-id portion of the address come from? - АРМ сам сген
 
 ## Часть 3. Настройка и проверка DHCPv6 сервера без сохранения состояния на маршрутизатре R1
 
-В связи с некорректной работой EVE NG в части получения АРМ IPv6 адреса по DHCPv6 был создан алогиченый стенд в cisco packet tracer для эмулации DHCPv6, а также произведены все насройки приведенные выше. К сожалению АРМ в cisco packet tracer не смог получить IPv6 адрес по SLAAC, поэтому лабораторная работа выполнена частично в eve ng, частично в cisco packet trace.
+В связи с некорректной работой EVE NG в части получения АРМ IPv6 адреса по DHCPv6 был создан аналогиченый стенд в cisco packet tracer для эмулации DHCPv6, а также произведены все насройки приведенные выше. 
 
+Необходимо настроить на маршрутизаторе R1 DHCPv6 без сохранения состояния, для этого необходимо создать dhcp пул в котором необходимо назначить в качестве dns сервера 2001:db8:acad::254 и доменное имя STATELESS.com. Далее необходимо назначить пул на интерфейс e0/1 (GigabitEthernet 0/0/1).
+
+
+После настройки маршрутизатора R1 в running-config маршрутизатора появятся настройки:
+
+```
+ipv6 dhcp pool R1-STATELESS
+ dns-server 2001:DB8:ACAD::254
+ domain-name STATELESS.com
+!
+interface GigabitEthernet0/0/1
+no ip address
+duplex auto
+speed auto
+ipv6 address FE80::1 link-local
+ipv6 address 2001:DB8:ACAD:1::1/64
+ipv6 nd other-config-flag
+ipv6 dhcp server R1-STATELESS
+```
+
+Чтобы проверить корректность работы DHCPv6 необходимо ввести ipv6config /all на PC-A:
+
+```
+C:\>ipv6config /all
+
+FastEthernet0 Connection:(default port)
+
+Physical Address................: 0030.F287.51B6
+Link-local IPv6 Address.........: FE80::230:F2FF:FE87:51B6
+IPv6 Address....................: 2001:DB8:ACAD:1:230:F2FF:FE87:51B6/64
+Default Gateway.................: FE80::1
+DNS Servers.....................: 2001:DB8:ACAD::254
+DHCPv6 IAID.....................: 7617
+DHCPv6 Client DUID..............: 00-01-00-01-B8-77-33-50-00-30-F2-87-51-B6
+```
+
+После этого произвести пинг с PC-A на порт e0/1 маршрутизатора R2:
+
+```
+C:\>ping 2001:db8:acad:3::1
+
+Pinging 2001:db8:acad:3::1 with 32 bytes of data:
+
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time=1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+
+Ping statistics for 2001:DB8:ACAD:3::1:
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+Minimum = 0ms, Maximum = 1ms, Average = 0ms
+```
+
+## Часть 4. Настройка и проверка DHCPv6 сервера с сохранением состояния на маршрутизатре R1
+
+Необходимо настроить на маршрутизаторе R1 DHCPv6 c сохранением состояния для АРМ PC-B за маршрутизатором R2, для этого необходимо создать dhcp пул в котором необходимо указать пул разрешенных адресов 2001:db8:acad:3:aaa::/80, назначить в качестве dns сервера 2001:db8:acad::254 и доменное имя STATEFUL.com. Далее необходимо назначить пул на интерфейс e0/0 (GigabitEthernet 0/0/0).
+
+После настройки маршрутизатора R1 в running-config маршрутизатора появятся настройки:
+
+```
+ipv6 dhcp pool R2-STATEFUL
+address prefix 2001:db8:acad:3:aaa::/80 lifetime 172800 86400
+dns-server 2001:DB8:ACAD::254
+domain-name STATEFUL.com
+!
+interface GigabitEthernet0/0/0
+no ip address
+duplex auto
+speed auto
+ipv6 address FE80::1 link-local
+ipv6 address 2001:DB8:ACAD:2::1/64
+ipv6 dhcp server R2-STATEFUL
+```
+
+## Часть 5. Настройка и проверка ретрансляции DHCPv6 на маршрутизаторе R2
+
+Чтобы проверить назначенный IPv6 адрес на PC-B необходимо ввести ipv6config /all:
+
+```
+C:\>ipv6config /all
+
+FastEthernet0 Connection:(default port)
+
+Physical Address................: 00D0.5841.054B
+Link-local IPv6 Address.........: FE80::2D0:58FF:FE41:54B
+IPv6 Address....................: 2001:DB8:ACAD:3:2D0:58FF:FE41:54B/64
+Default Gateway.................: FE80::1
+DNS Servers.....................: ::
+DHCPv6 IAID.....................: 2270
+DHCPv6 Client DUID..............: 00-01-00-01-9D-99-EB-D2-00-D0-58-41-05-4B
+```
+
+Для настройки ретрансляции необходимо настроить на интерфейсе e0/1 (GigabitEthernet 0/0/1) маршрутизатора R2 настроить managed-config-flag  и включить dhcpv6 ретрансляцию на маршрутизатор R1 порт 2001:db8:acad:2::1 g0/0/0.
+
+При настройке dhcpv6 ретрансляции произошла ошибка, видимо cisco packet tracer не поддерживает dhcpv6 ретрансляцию и дальнейшая настройка и проверка корректности работы невозможна.
+
+```
+R2(config-if)#ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0/0 
+                                        ^
+% Invalid input detected at '^' marker.
+R2(config-if)#
+```
 
