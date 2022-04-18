@@ -324,5 +324,16 @@
 
 ![](Lab_ipv4_ipv6.PNG)
 
+Более детальные изображения площаодк:
+
+![](Lab_ipv4_ipv6.PNG)
+
+![](Lab_ipv4_ipv6.PNG)
+
+![](Lab_Rt_Ch_La.PNG)
+
+![](Lab_SPB.PNG)
+
+
 
 
