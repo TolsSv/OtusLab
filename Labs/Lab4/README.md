@@ -342,6 +342,34 @@
 
 ![](Lab_SPB.PNG)
 
+## Часть 1. Настройка ip адресов на всех активных портах
+
+### Базовая настройка маршрутизаторов и коммутаторов
+
+В качестве базовой настройки маршрутизаторов и коммутаторов необходимо: настроить имя, отключить DNS lookup, настроить пароль на вход в привелигерованный режим, настроить аутентификацию и пароль на вход через консоль, настроить аутентификацию и пароль при удаленном подключении, настроить хранение паролей в зашифрованном виде, создать баннер, установить время на маршрутизаторте/коммутаторе и сохраненить действующую конфигурацию в стартовую.
+
+После базовой настройки в running-config появятся настройки:
+```
+service password-encryption
+!
+hostname <hostname>
+!
+!
+enable password 7 <encrypted password>
+!
+clock timezone msk 3 0
+!
+no ip domain lookup
+!
+banner motd ^CAnyone accessing the device that unauthorized access is prohibited^C
+!
+line con 0
+ password 7 <encrypted password>
+ login
+line vty 0 4
+ password 7 <encrypted password>
+ login
+```
 
 
 
