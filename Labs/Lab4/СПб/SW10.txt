@@ -1,0 +1,139 @@
+SW10#sh run
+Building configuration...
+
+Current configuration : 1538 bytes
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW10
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 070C2D4D5D1A
+!
+no aaa new-model
+clock timezone msk 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!         
+!
+!
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ no ip address
+ shutdown
+!
+interface Ethernet0/1
+ no ip address
+ shutdown
+!
+interface Ethernet0/2
+ ip address 80.80.1.10 255.255.255.128
+ ipv6 address FE80::10 link-local
+ ipv6 address 2A02:6B8:89:AC62::10/120
+!
+interface Ethernet0/3
+ ip address 192.168.18.154 255.255.255.252
+ ipv6 address FE80::10 link-local
+ ipv6 address FDE8:8A:FC:1:18::172/124
+!
+interface Ethernet1/0
+ ip address 192.168.18.146 255.255.255.252
+ ipv6 address FE80::10 link-local
+ ipv6 address FDE8:8A:FC:1:18::152/124
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!         
+!
+!
+!
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 14141B180F0B
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 110A1016141D
+ login
+ transport input none
+line vty 1 4
+ login
+ transport input none
+!
+!
+end
