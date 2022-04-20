@@ -1,0 +1,168 @@
+SW4#sh run
+Building configuration...
+
+Current configuration : 2329 bytes
+!
+! Last configuration change at 23:25:55 msk Wed Apr 20 2022
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 14141E0A1F17
+!
+no aaa new-model
+clock timezone msk 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!         
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+interface Ethernet0/0
+ no ip address
+!
+interface Ethernet0/0.100
+ description MSK_Client1
+ encapsulation dot1Q 100
+ ip address 192.168.10.130 255.255.255.192
+ ipv6 address FE80::4 link-local
+ ipv6 address FDE8:8A:FC:1:10:A1:0:4/96
+!
+interface Ethernet0/0.802
+ description Management
+ encapsulation dot1Q 802
+ ip address 80.80.1.195 255.255.255.192
+ ipv6 address FE80::4 link-local
+ ipv6 address 2A02:6B8:89:AC62::204/120
+!
+interface Ethernet0/0.1000
+ description Native
+!
+interface Ethernet0/1
+ no ip address
+!         
+interface Ethernet0/1.101
+ description MSK_Client2
+ encapsulation dot1Q 101
+ ip address 192.168.10.194 255.255.255.192
+ ipv6 address FE80::4 link-local
+ ipv6 address FDE8:8A:FC:1:10:A2:0:4/96
+!
+interface Ethernet0/1.1000
+ description Native
+ encapsulation dot1Q 1000
+!
+interface Ethernet0/2
+ ip address 192.168.10.41 255.255.255.252
+ ipv6 address FE80::4 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:101/124
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ ip address 192.168.10.26 255.255.255.252
+ ipv6 address FE80::4 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:62/124
+!
+interface Ethernet1/1
+ ip address 192.168.10.34 255.255.255.252
+ ipv6 address FE80::4 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:82/124
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 192.168.10.132
+!
+!         
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 070C285F4D06
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 1511021F0725
+ login
+ transport input none
+line vty 1 4
+ login    
+ transport input none
+!
+!
+end

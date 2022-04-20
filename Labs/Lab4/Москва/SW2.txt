@@ -1,0 +1,143 @@
+SW2#sh run
+Building configuration...
+
+Current configuration : 2076 bytes
+!
+! Last configuration change at 23:19:50 msk Wed Apr 20 2022
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 00071F071748
+!
+no aaa new-model
+clock timezone msk 3 0
+!
+!
+!         
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ switchport trunk allowed vlan 101,802,1000
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 1000
+ switchport mode trunk
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 101,1000
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 1000
+ switchport mode trunk
+!
+interface Ethernet0/2
+ switchport access vlan 101
+ switchport mode access
+!
+interface Ethernet0/3
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+!
+interface Ethernet1/0
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+!
+interface Ethernet1/1
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+!
+interface Ethernet1/2
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+!
+interface Ethernet1/3
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+!         
+interface Vlan101
+ description MSK_Client2
+ no ip address
+!
+interface Vlan802
+ description Management
+ ip address 80.80.1.194 255.255.255.192
+ ipv6 address FE80::2 link-local
+ ipv6 address 2A02:6B8:89:AC62::202/120
+!
+interface Vlan999
+ description Parking_Lot
+ no ip address
+ shutdown
+!
+interface Vlan1000
+ description Native
+ no ip address
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 80.80.1.196
+!
+!
+ipv6 route ::/0 2A02:6B8:89:AC62::205
+!
+!
+!
+control-plane
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 00071A150754
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 13061E010803
+ login
+line vty 1 4
+ login
+!         
+!
+end
