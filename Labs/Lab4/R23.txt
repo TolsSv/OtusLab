@@ -1,0 +1,138 @@
+R23#sh run
+Building configuration...
+
+Current configuration : 1513 bytes
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R23
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 094F42080A16
+!
+no aaa new-model
+clock timezone msk 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!         
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ ip address 89.110.29.206 255.255.255.252
+ ipv6 address FE80::23 link-local
+ ipv6 address 2A02:6B8:89:AC61:AC::32/124
+!
+interface Ethernet0/1
+ ip address 192.168.52.2 255.255.255.252
+ ipv6 address FE80::23 link-local
+ ipv6 address FDE8:8A:FC:1:52::2/124
+!
+interface Ethernet0/2
+ ip address 192.168.52.14 255.255.255.252
+ ipv6 address FE80::23 link-local
+ ipv6 address FDE8:8A:FC:1:52::32/124
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown 
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!         
+!
+!
+!
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 02050D480809
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 110A1016141D
+ login
+ transport input none
+line vty 1 4
+ login
+ transport input none
+!
+!
+end
