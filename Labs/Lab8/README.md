@@ -1241,6 +1241,7 @@ router eigrp LAB
 !
 ipv6 prefix-list lab seq 5 deny FDE8:8A:FC:1:18::/80
 ipv6 prefix-list lab seq 10 deny 2A02:6B8:89:AC62::/64
+ipv6 prefix-list lab seq 15 permit ::/0
 !
 access-list 2 deny   192.168.18.0 0.0.0.255
 access-list 2 deny   80.80.1.0 0.0.0.255
