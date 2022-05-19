@@ -1157,7 +1157,7 @@ ip route 0.0.0.0 0.0.0.0 192.168.18.133
 ipv6 route ::/0 FDE8:8A:FC:1:18::133
 ```
 
-В выводе команд show ip route eigrp и show ipv6 route eigrp будет указан маршрут по умолчанию
+В выводе команд show ip route eigrp и show ipv6 route eigrp будет указан маршрут по умолчанию. В ipv6 что-то пошло не так...
 
 #### Маршрутизатор R32:
 ```
@@ -1214,5 +1214,69 @@ D   FDE8:8A:FC:1:18::/80 [90/1536000]
      via FE80::16, Ethernet0/0
 ```
 
+## Часть 3. Создание ACL и настройка его для передачи на R32 только маршрут по умолчанию
+
+На маршрутизаторе необходимо создать ACL для доступа только маршрутов по умолчанию и назначить их на вход для eigrp.
+
+В выводе running-config маршрутизатора появятся настройки:
+
+#### Маршрутизатор R32:
+```    
+router eigrp LAB
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+   topology base
+   distribute-list 2 in 
+  exit-af-topology
+ exit-address-family
+ !
+ address-family ipv6 unicast autonomous-system 1
+  !
+   topology base
+   distribute-list prefix-list lab in 
+  exit-af-topology
+ exit-address-family
+!
+!
+ipv6 prefix-list lab seq 5 deny FDE8:8A:FC:1:18::/80
+ipv6 prefix-list lab seq 10 deny 2A02:6B8:89:AC62::/64
+!
+access-list 2 deny   192.168.18.0 0.0.0.255
+access-list 2 deny   80.80.1.0 0.0.0.255
+access-list 2 permit any
+!    
+``` 
+
+В выводе команд show ip route eigrp и show ipv6 route eigrp будет указан только маршрут по умолчанию. Но по ipv6 он и так не получался...
+
+#### Маршрутизатор R32:
+```    
+R32#show ip route eigrp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 192.168.18.137 to network 0.0.0.0
+
+D*EX  0.0.0.0/0 [170/1536000] via 192.168.18.137, 00:08:00, Ethernet0/0
+R32#show ipv6 route eigrp
+IPv6 Routing Table - default - 3 entries
+Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
+       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
+       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
+       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
+       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
+       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
+       lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
+R32#    
+``` 
 
 
