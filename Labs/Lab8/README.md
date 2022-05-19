@@ -1279,4 +1279,73 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
 R32#    
 ``` 
 
+В качестве результата лабораторной работы проверим доступность узлов, проверив ping дальнего узла площадки
 
+#### Маршрутизатор R18:
+```    
+R18#ping 192.168.18.142
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.18.142, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+R18#ping fde8:8a:fc:1:18::182
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to FDE8:8A:FC:1:18::182, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/6/27 ms   
+``` 
+
+#### Маршрутизатор R17:
+```    
+R17#ping 192.168.18.138
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.18.138, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/4 ms  
+``` 
+
+#### Маршрутизатор R16:
+```    
+R16#ping 80.80.1.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 80.80.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+``` 
+
+#### Маршрутизатор R32:
+```    
+R32#ping 80.80.1.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 80.80.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms  
+``` 
+
+#### L3 коммутатор SW10:
+```    
+SW10#ping 192.168.18.129
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.18.129, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+SW10#ping fde8:8a:fc:1:18::129
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to FDE8:8A:FC:1:18::129, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+``` 
+
+#### L3 коммутатор SW9:
+```    
+SW9#ping 192.168.18.133      
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.18.133, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+SW9#ping fde8:8a:fc:1:18::133
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to FDE8:8A:FC:1:18::133, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+``` 
