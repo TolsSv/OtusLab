@@ -300,9 +300,144 @@ ipv6 router ospf 1
 !
 ```
 
+Чтобы проверить, что АСО видят соседей, получают маршруты и их взаимодействие настроено корректно необходимо ввести show ip ospf neighbors, show ip route ospf, show ipv6 route ospf, show ip protocols:
 
+#### Маршрутизатор R14:
 
+```
+ R14#show ip ospf neighbor 
 
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+12.12.12.12       1   FULL/BDR        00:00:35    192.168.10.10   Ethernet0/0
+19.19.19.19       1   FULL/BDR        00:00:31    192.168.10.2    Ethernet0/3
+R14#show ip route ospf    
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      192.168.10.0/24 is variably subnetted, 14 subnets, 2 masks
+O IA     192.168.10.4/30 [110/30] via 192.168.10.10, 00:48:44, Ethernet0/0
+O        192.168.10.12/30 [110/30] via 192.168.10.10, 00:48:44, Ethernet0/0
+O        192.168.10.20/30 [110/20] via 192.168.10.10, 00:48:44, Ethernet0/0
+O IA     192.168.10.24/30 [110/20] via 192.168.10.10, 00:49:36, Ethernet0/0
+O IA     192.168.10.28/30 [110/20] via 192.168.10.10, 00:49:12, Ethernet0/0
+O IA     192.168.10.32/30 [110/30] via 192.168.10.10, 00:28:59, Ethernet0/0
+O IA     192.168.10.36/30 [110/30] via 192.168.10.10, 00:25:29, Ethernet0/0
+O IA     192.168.10.40/30 [110/30] via 192.168.10.10, 00:28:49, Ethernet0/0
+R14#show ipv6 route ospf
+IPv6 Routing Table - default - 17 entries
+Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
+       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
+       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
+       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
+       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
+       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
+       lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
+OI  FDE8:8A:FC:1:10:A3:0:10/124 [110/30]
+     via FE80::12, Ethernet0/0
+     via FE80::13, Ethernet0/1
+O   FDE8:8A:FC:1:10:A3:0:30/124 [110/20]
+     via FE80::13, Ethernet0/1
+O   FDE8:8A:FC:1:10:A3:0:50/124 [110/20]
+     via FE80::12, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:60/124 [110/20]
+     via FE80::12, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:70/124 [110/20]
+     via FE80::12, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:80/124 [110/20]
+     via FE80::13, Ethernet0/1
+OI  FDE8:8A:FC:1:10:A3:0:90/124 [110/20]
+     via FE80::13, Ethernet0/1
+OI  FDE8:8A:FC:1:10:A3:0:100/124 [110/30]
+     via FE80::13, Ethernet0/1
+     via FE80::12, Ethernet0/0
+R14#show ip protocols   
+*** IP Routing is NSF aware ***
+
+Routing Protocol is "application"
+  Sending updates every 0 seconds
+  Invalid after 0 seconds, hold down 0, flushed after 0
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Maximum path: 32
+  Routing for Networks:
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+  Distance: (default is 4)
+
+Routing Protocol is "ospf 1"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Router ID 14.14.14.14
+  It is an area border router
+  Number of areas in this router is 2. 2 normal 0 stub 0 nssa
+  Maximum path: 4
+  Routing for Networks:
+  Routing on Interfaces Configured Explicitly (Area 0):
+    Ethernet0/1
+    Ethernet0/0
+  Routing on Interfaces Configured Explicitly (Area 101):
+    Ethernet0/3
+  Passive Interface(s):
+    Ethernet0/2
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+    13.13.13.13          110      00:31:53
+    15.15.15.15          110      00:49:15
+    12.12.12.12          110      00:26:00
+  Distance: (default is 110)
+```
+
+#### Маршрутизатор R15:
+
+```
+
+```
+
+#### Маршрутизатор R12:
+
+```
+
+```
+
+#### Маршрутизатор R13:
+
+```
+
+```
+
+#### Маршрутизатор R19:
+
+```
+
+```
+
+#### Маршрутизатор R20:
+
+```
+
+```
+
+#### L3 коммутатор SW4:
+
+```
+
+```
+
+#### L3 коммутатор SW5:
+
+```
+
+```
 
 
 
