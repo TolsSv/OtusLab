@@ -218,6 +218,7 @@ interface Ethernet0/0
  ipv6 ospf 1 area 102
 !
 router ospf 1
+ router-id 20.20.20.20
  passive-interface Ethernet0/1
  passive-interface Ethernet0/2
  passive-interface Ethernet0/3
