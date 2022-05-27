@@ -1270,6 +1270,113 @@ Routing Protocol is "ospf 1"
   Distance: (default is 110)
 ```
 
+## Часть 2. Настройка распространения маршрута по умолчанию
+
+Для маршрутизаторов R14 и R15 необходимо создать ipv4 и ipv6 маршруты по умолчанию до маршрутизаторов R22 и R21 соответственно. В режиме конфигурирования ospf настроить передачу маршруты по умолчанию для ipv4 и ipv6.
+
+В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R14:
+
+```
+router ospf 1
+ router-id 14.14.14.14
+ passive-interface Ethernet0/2
+ default-information originate
+!
+ip route 0.0.0.0 0.0.0.0 89.110.29.194
+!
+ipv6 route ::/0 2A02:6B8:89:AC61:AC::2
+ipv6 router ospf 1
+ default-information originate
+```
+
+#### Маршрутизатор R15:
+
+```
+router ospf 1
+ router-id 15.15.15.15
+ passive-interface Ethernet0/2
+ default-information originate
+!
+ip route 0.0.0.0 0.0.0.0 89.110.29.198
+!
+ipv6 route ::/0 2A02:6B8:89:AC61:AC::12
+ipv6 router ospf 1
+ default-information originate
+!
+```
+
+На примере маршрутизатора R13 убедимся в появлении маршрута по умолчанию в выводе команд show ip route ospf, show ipv6 route ospf:
+
+#### Маршрутизатор R13:
+
+```
+R13#sh ip route ospf
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 192.168.10.17 to network 0.0.0.0
+
+O*E2  0.0.0.0/0 [110/1] via 192.168.10.17, 00:17:21, Ethernet0/3
+                [110/1] via 192.168.10.13, 00:10:25, Ethernet0/2
+      80.0.0.0/26 is subnetted, 1 subnets
+O        80.80.1.192 [110/20] via 192.168.10.38, 01:05:07, Ethernet0/0
+                     [110/20] via 192.168.10.34, 01:15:20, Ethernet0/1
+      192.168.10.0/24 is variably subnetted, 17 subnets, 3 masks
+O IA     192.168.10.0/30 [110/20] via 192.168.10.17, 02:14:04, Ethernet0/3
+O IA     192.168.10.4/30 [110/20] via 192.168.10.13, 02:17:56, Ethernet0/2
+O        192.168.10.8/30 [110/20] via 192.168.10.17, 02:14:04, Ethernet0/3
+O        192.168.10.20/30 [110/20] via 192.168.10.13, 02:17:56, Ethernet0/2
+          
+R13#sh ipv6 route ospf
+IPv6 Routing Table - default - 20 entries
+Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
+       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
+       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
+       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
+       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
+       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
+       lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
+OE2 ::/0 [110/1], tag 1
+     via FE80::14, Ethernet0/3
+     via FE80::15, Ethernet0/2
+O   2A02:6B8:89:AC62::200/120 [110/20]
+     via FE80::4, Ethernet0/1
+     via FE80::5, Ethernet0/0
+O   FDE8:8A:FC:1:10:A1::/96 [110/20]
+     via FE80::4, Ethernet0/1
+     via FE80::5, Ethernet0/0
+O   FDE8:8A:FC:1:10:A2::/96 [110/20]
+     via FE80::4, Ethernet0/1
+     via FE80::5, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3::/124 [110/20]
+     via FE80::14, Ethernet0/3
+OI  FDE8:8A:FC:1:10:A3:0:10/124 [110/20]
+     via FE80::15, Ethernet0/2
+O   FDE8:8A:FC:1:10:A3:0:20/124 [110/20]
+     via FE80::14, Ethernet0/3
+O   FDE8:8A:FC:1:10:A3:0:50/124 [110/20]
+     via FE80::15, Ethernet0/2
+O   FDE8:8A:FC:1:10:A3:0:60/124 [110/20]
+     via FE80::4, Ethernet0/1
+O   FDE8:8A:FC:1:10:A3:0:70/124 [110/20]
+     via FE80::5, Ethernet0/0
+O   FDE8:8A:FC:1:10:A3:0:100/124 [110/20]
+     via FE80::4, Ethernet0/1
+     via FE80::5, Ethernet0/0
+```
+
+
+
 
 
 
