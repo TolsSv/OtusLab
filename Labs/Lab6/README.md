@@ -141,6 +141,10 @@ interface Ethernet0/3
 !
 router ospf 1
  router-id 12.12.12.12
+ passive-interface Ethernet1/0
+ passive-interface Ethernet1/1
+ passive-interface Ethernet1/2
+ passive-interface Ethernet1/3
 !
 ipv6 router ospf 1
 !
@@ -149,7 +153,7 @@ ipv6 router ospf 1
 #### Маршрутизатор R13:
 
 ```
-! 
+!
 interface Ethernet0/0
  ip address 192.168.10.37 255.255.255.252
  ip ospf 1 area 10
@@ -172,7 +176,7 @@ interface Ethernet0/2
  ipv6 ospf 1 area 0
 !
 interface Ethernet0/3
- ip address 192.168.10.17 255.255.255.252
+ ip address 192.168.10.18 255.255.255.252
  ip ospf 1 area 0
  ipv6 address FE80::13 link-local
  ipv6 address FDE8:8A:FC:1:10:A3:0:42/124
@@ -180,9 +184,13 @@ interface Ethernet0/3
 !
 router ospf 1
  router-id 13.13.13.13
-!         
+ passive-interface Ethernet1/0
+ passive-interface Ethernet1/1
+ passive-interface Ethernet1/2
+ passive-interface Ethernet1/3
+!
 ipv6 router ospf 1
-! 
+!
 ```
 
 #### Маршрутизатор R19:
