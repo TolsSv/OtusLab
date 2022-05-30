@@ -1170,7 +1170,7 @@ ipv6 route ::/0 2A02:6B8:89:AC61:AC::81
 ipv6 route ::/0 2A02:6B8:89:AC61:AC::91
 ```
 
-В выводе команд show ip route eigrp и show ipv6 route eigrp будет указан маршрут по умолчанию. В ipv6 что-то пошло не так...
+В выводе команд show ip route eigrp и show ipv6 route eigrp будет указан маршрут по умолчанию.
 
 #### Маршрутизатор R32:
 ```
