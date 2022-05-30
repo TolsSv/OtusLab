@@ -1363,4 +1363,3 @@ Sending 5, 100-byte ICMP Echos to FDE8:8A:FC:1:18::133, timeout is 2 seconds:
 Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ``` 
 
-В папке также приведены выводы show running-config сетевого оборудования. 
