@@ -19,7 +19,7 @@
 Лабораторная работа разбита на 2 части:
 1) Настройка EIGRP на маршрутизаторах и L3 коммутаторах
 2) Настройка на маршрутизаторах R17 и R16 суммаризации
-3) Создание для R16 маршрута по умолчанию через R18 и передача его на R32
+3) Создание для маршрута по умолчанию через R18 и передача его на R32
 4) Создание ACL и настройка его для передачи на R32 только маршрут по умолчанию
 
 ## Часть 1. Настройка EIGRP на маршрутизаторах и L3 коммутаторах
@@ -1127,41 +1127,54 @@ EIGRP-IPv6 VR(LAB) Address-Family Protocol for AS(1)
       Summarizing 8 components with metric 131072000
 ```
 
-## Часть 3. Создание для R16 маршрута по умолчанию через R18 и передача его на R32
+## Часть 3. Создание маршрута по умолчанию через R18 и передача его на R32
 
-На R16 cоздадим ipv4 и ipv6 маршрут по умолчанию через R18. Настроим редистрибуцию статического маршрута на R16.
+На R18 cоздадим ipv4 и ipv6 маршрут по умолчанию, настроим редистрибуцию статического маршрута и отправку суммарного маршрута ::/0.
 
 В выводе running-config маршрутизаторов появятся настройки:
 
-#### Маршрутизатор R16:
+#### Маршрутизатор R18:
 
 ```
- router eigrp LAB
+router eigrp LAB
  !
  address-family ipv4 unicast autonomous-system 1
   !
   topology base
    redistribute static
   exit-af-topology
+  network 192.168.18.0
+  eigrp router-id 18.18.18.18
  exit-address-family
  !
  address-family ipv6 unicast autonomous-system 1
   !
+  af-interface Ethernet0/0
+   summary-address ::/0
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   summary-address ::/0
+  exit-af-interface
+  !
   topology base
    redistribute static
   exit-af-topology
+  eigrp router-id 18.18.18.18
  exit-address-family
 !
-ip route 0.0.0.0 0.0.0.0 192.168.18.133
+ip route 0.0.0.0 0.0.0.0 89.110.29.229
+ip route 0.0.0.0 0.0.0.0 89.110.29.225
 !
-ipv6 route ::/0 FDE8:8A:FC:1:18::133
+ipv6 route ::/0 2A02:6B8:89:AC61:AC::81
+ipv6 route ::/0 2A02:6B8:89:AC61:AC::91
 ```
 
 В выводе команд show ip route eigrp и show ipv6 route eigrp будет указан маршрут по умолчанию. В ipv6 что-то пошло не так...
 
 #### Маршрутизатор R32:
 ```
-R32#show ip route eigrp   
+R32#show ip route eigrp
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
        N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
@@ -1174,28 +1187,28 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is 192.168.18.137 to network 0.0.0.0
 
-D*EX  0.0.0.0/0 [170/1536000] via 192.168.18.137, 00:06:35, Ethernet0/0
+D*EX  0.0.0.0/0 [170/2048000] via 192.168.18.137, 00:00:54, Ethernet0/0
       80.0.0.0/25 is subnetted, 1 subnets
-D        80.80.1.0 [90/2048000] via 192.168.18.137, 01:08:37, Ethernet0/0
+D        80.80.1.0 [90/2048000] via 192.168.18.137, 00:00:44, Ethernet0/0
       192.168.18.0/24 is variably subnetted, 10 subnets, 3 masks
 D        192.168.18.0/25 
-           [90/2048000] via 192.168.18.137, 01:08:35, Ethernet0/0
+           [90/2048000] via 192.168.18.137, 00:00:44, Ethernet0/0
 D        192.168.18.128/30 
-           [90/2048000] via 192.168.18.137, 01:08:51, Ethernet0/0
+           [90/2048000] via 192.168.18.137, 00:00:44, Ethernet0/0
 D        192.168.18.132/30 
-           [90/1536000] via 192.168.18.137, 01:08:54, Ethernet0/0
+           [90/1536000] via 192.168.18.137, 00:00:44, Ethernet0/0
 D        192.168.18.140/30 
-           [90/2048000] via 192.168.18.137, 01:08:35, Ethernet0/0
+           [90/2048000] via 192.168.18.137, 00:00:44, Ethernet0/0
 D        192.168.18.144/30 
-           [90/2048000] via 192.168.18.137, 01:08:37, Ethernet0/0
+           [90/2048000] via 192.168.18.137, 00:00:44, Ethernet0/0
 D        192.168.18.148/30 
-           [90/1536000] via 192.168.18.137, 01:08:54, Ethernet0/0
+           [90/1536000] via 192.168.18.137, 00:00:44, Ethernet0/0
 D        192.168.18.152/30 
-           [90/1536000] via 192.168.18.137, 01:08:54, Ethernet0/0
+           [90/1536000] via 192.168.18.137, 00:00:44, Ethernet0/0
 D        192.168.18.156/30 
-           [90/2048000] via 192.168.18.137, 01:08:35, Ethernet0/0
-R32#show ipv6 route eigrp 
-IPv6 Routing Table - default - 7 entries
+           [90/2048000] via 192.168.18.137, 00:00:44, Ethernet0/0
+R32#show ipv6 route eigrp
+IPv6 Routing Table - default - 6 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
        H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
@@ -1204,9 +1217,7 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
        ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
        lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
-D   2A02:6B8:89:AC61:AC::80/124 [90/2048000]
-     via FE80::16, Ethernet0/0
-D   2A02:6B8:89:AC61:AC::90/124 [90/2048000]
+D   ::/0 [90/2048000]
      via FE80::16, Ethernet0/0
 D   2A02:6B8:89:AC62::/120 [90/2048000]
      via FE80::16, Ethernet0/0
@@ -1249,11 +1260,11 @@ access-list 2 permit any
 !    
 ``` 
 
-В выводе команд show ip route eigrp и show ipv6 route eigrp будет указан только маршрут по умолчанию. Но по ipv6 он и так не получался...
+В выводе команд show ip route eigrp и show ipv6 route eigrp указан только маршрут по умолчанию.
 
 #### Маршрутизатор R32:
 ```    
-R32#show ip route eigrp
+R32#show ip route eigrp 
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
        N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
@@ -1266,9 +1277,9 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is 192.168.18.137 to network 0.0.0.0
 
-D*EX  0.0.0.0/0 [170/1536000] via 192.168.18.137, 00:08:00, Ethernet0/0
+D*EX  0.0.0.0/0 [170/2048000] via 192.168.18.137, 00:02:51, Ethernet0/0
 R32#show ipv6 route eigrp
-IPv6 Routing Table - default - 3 entries
+IPv6 Routing Table - default - 4 entries
 Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
        H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
@@ -1277,10 +1288,11 @@ Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
        O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
        ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
        lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
-R32#    
+D   ::/0 [90/2048000]
+     via FE80::16, Ethernet0/0    
 ``` 
 
-В качестве результата лабораторной работы проверим доступность узлов выполнив ping удаленных узлов площадки
+В качестве результата лабораторной работы проверим доступность узлов выполнив ping удаленных узлов площадки.
 
 #### Маршрутизатор R18:
 ```    
@@ -1350,3 +1362,5 @@ Sending 5, 100-byte ICMP Echos to FDE8:8A:FC:1:18::133, timeout is 2 seconds:
 !!!!!
 Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ``` 
+
+В папке также приведены выводы show running-config сетевого оборудования. 
