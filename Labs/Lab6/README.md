@@ -19,12 +19,11 @@
 
 ## Ход работы
 
-Лабораторная работа разбита на 5 частей:
+Лабораторная работа разбита на 4 части:
 1) Настройка ospf на маршрутизаторах и коммутаторах L3
 2) Настройка распространения маршрута по умолчанию
-3) Фильтрация для маршрутизаторов для зоны 10
-4) Фильтрация для маршрутизаторов для зоны 101
-5) Фильтрация для маршрутизаторов для зоны 102
+3) Фильтрация для маршрутизаторов для зоны 101
+4) Фильтрация для маршрутизаторов для зоны 102
 
 ## Часть 1. Настройка ospf на маршрутизаторах и коммутаторах L3
 
@@ -1375,12 +1374,72 @@ O   FDE8:8A:FC:1:10:A3:0:100/124 [110/20]
      via FE80::5, Ethernet0/0
 ```
 
+## Часть 3. Фильтрация для маршрутизаторов для зоны 101
 
+Для фильтрации заны 101 переведем ее в totally-stub area на маршрутизаторах R19 и R14.
 
+В выводе running-config маршрутизаторов появятся настройки:
 
+#### Маршрутизатор R14:
 
+```
+router ospf 1
+ router-id 14.14.14.14
+ area 101 stub no-summary
+ passive-interface Ethernet0/2
+ default-information originate
+!
+ipv6 router ospf 1
+ area 101 stub no-summary
+ default-information originate
+```
 
+#### Маршрутизатор R19:
 
+```
+router ospf 1
+ router-id 19.19.19.19
+ area 101 stub
+ passive-interface Ethernet0/1
+ passive-interface Ethernet0/2
+ passive-interface Ethernet0/3
+!
+ipv6 router ospf 1
+ area 101 stub
+```
+
+Проверим, что маршрутизатор R19 получает только маршрут по умолчанию к помощью команд show ip route ospf, show ipv6 route ospf:
+
+#### Маршрутизатор R19:
+
+```
+R19#show ip route ospf
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 192.168.10.1 to network 0.0.0.0
+
+O*IA  0.0.0.0/0 [110/11] via 192.168.10.1, 00:18:12, Ethernet0/0
+R19#show ipv6 route ospf
+IPv6 Routing Table - default - 4 entries
+Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
+       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
+       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
+       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
+       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
+       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
+       lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
+OI  ::/0 [110/11]
+     via FE80::14, Ethernet0/0
+```
 
 
 
