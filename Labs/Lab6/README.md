@@ -1443,14 +1443,173 @@ OI  ::/0 [110/11]
 
 ## Часть 4. Фильтрация для маршрутизаторов для зоны 102
 
-Для фильтрации заны 102 переведем ее в totally-stub area на маршрутизаторах R19 и R14.
+Для начала убедимся, что маршрутизатор R20 из зоны 102 получает маршрут к R19 из зоны 101 командами show ip route ospf, show ipv6 route ospf:
+
+#### Маршрутизатор R20:
+
+```
+R20#show ip route ospf
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 192.168.10.5 to network 0.0.0.0
+
+O*E2  0.0.0.0/0 [110/1] via 192.168.10.5, 00:53:13, Ethernet0/0
+      80.0.0.0/26 is subnetted, 1 subnets
+O IA     80.80.1.192 [110/40] via 192.168.10.5, 00:05:45, Ethernet0/0
+      192.168.10.0/24 is variably subnetted, 14 subnets, 3 masks
+O IA     192.168.10.0/30 [110/40] via 192.168.10.5, 00:00:17, Ethernet0/0
+O IA     192.168.10.8/30 [110/30] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.12/30 [110/20] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.16/30 [110/30] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.20/30 [110/20] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.24/30 [110/30] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.28/30 [110/30] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.32/30 [110/30] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.36/30 [110/30] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.40/30 [110/40] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.128/26 [110/40] via 192.168.10.5, 00:05:45, Ethernet0/0
+O IA     192.168.10.192/26 [110/40] via 192.168.10.5, 00:05:45, Ethernet0/0
+R20#show ipv6 route ospf
+IPv6 Routing Table - default - 17 entries
+Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
+       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
+       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
+       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
+       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
+       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
+       lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
+OE2 ::/0 [110/1], tag 1
+     via FE80::15, Ethernet0/0
+OI  2A02:6B8:89:AC62::200/120 [110/40]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A1::/96 [110/40]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A2::/96 [110/40]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3::/124 [110/40]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:20/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:30/124 [110/20]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:40/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:50/124 [110/20]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:60/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:70/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:80/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:90/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:100/124 [110/40]
+     via FE80::15, Ethernet0/0
+```
+
+Настроим на маршрутизаторе R15 фильтрацию на отправку обновлений в зону 102 и запретив отправку в неее маршрута в зону 101.
 
 В выводе running-config маршрутизаторов появятся настройки:
 
-#### Маршрутизатор R14:
+#### Маршрутизатор R15:
 
 ```
+router ospf 1
+ router-id 15.15.15.15
+ area 102 filter-list prefix lab101 in
+ passive-interface Ethernet0/2
+ default-information originate
+!
+ip prefix-list lab101 seq 5 deny 192.168.10.0/30
+ip prefix-list lab101 seq 20 permit 0.0.0.0/0 le 32
+ipv6 route ::/0 2A02:6B8:89:AC61:AC::12
+ipv6 router ospf 1
+ area 102 filter-list prefix lab101 in
+ default-information originate
+!
+ipv6 prefix-list lab101 seq 5 deny FDE8:8A:FC:1:10:A3::/124
+ipv6 prefix-list lab101 seq 25 permit ::/0 le 128
+```
 
+Убедимся, что маршрутизатор R20 из зоны 102 не получает маршрут к R19 из зоны 101 командами show ip route ospf, show ipv6 route ospf:
+
+#### Маршрутизатор R20:
+
+```
+R20#show ip route ospf  
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 192.168.10.5 to network 0.0.0.0
+
+O*E2  0.0.0.0/0 [110/1] via 192.168.10.5, 00:58:33, Ethernet0/0
+      80.0.0.0/26 is subnetted, 1 subnets
+O IA     80.80.1.192 [110/40] via 192.168.10.5, 00:11:05, Ethernet0/0
+      192.168.10.0/24 is variably subnetted, 13 subnets, 3 masks
+O IA     192.168.10.8/30 [110/30] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.12/30 [110/20] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.16/30 [110/30] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.20/30 [110/20] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.24/30 [110/30] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.28/30 [110/30] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.32/30 [110/30] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.36/30 [110/30] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.40/30 [110/40] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.128/26 [110/40] via 192.168.10.5, 00:11:05, Ethernet0/0
+O IA     192.168.10.192/26 [110/40] via 192.168.10.5, 00:11:05, Ethernet0/0
+R20#show ipv6 route ospf
+IPv6 Routing Table - default - 16 entries
+Codes: C - Connected, L - Local, S - Static, U - Per-user Static route
+       B - BGP, HA - Home Agent, MR - Mobile Router, R - RIP
+       H - NHRP, I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea
+       IS - ISIS summary, D - EIGRP, EX - EIGRP external, NM - NEMO
+       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
+       O - OSPF Intra, OI - OSPF Inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2, la - LISP alt
+       lr - LISP site-registrations, ld - LISP dyn-eid, a - Application
+OE2 ::/0 [110/1], tag 1
+     via FE80::15, Ethernet0/0
+OI  2A02:6B8:89:AC62::200/120 [110/40]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A1::/96 [110/40]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A2::/96 [110/40]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:20/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:30/124 [110/20]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:40/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:50/124 [110/20]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:60/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:70/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:80/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:90/124 [110/30]
+     via FE80::15, Ethernet0/0
+OI  FDE8:8A:FC:1:10:A3:0:100/124 [110/40]
+     via FE80::15, Ethernet0/0
 ```
 
 
