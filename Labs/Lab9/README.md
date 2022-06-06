@@ -247,25 +247,105 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 #### Маршрутизатор R21:
 
 ```
-
+!
+router bgp 301
+ bgp router-id 21.21.21.21
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::11 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::21 remote-as 101
+ neighbor 2A02:6B8:89:AC61:AC::42 remote-as 520
+ neighbor 89.110.29.197 remote-as 1001
+ neighbor 89.110.29.201 remote-as 101
+ neighbor 89.110.29.210 remote-as 520
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
+  neighbor 2A02:6B8:89:AC61:AC::42 activate
+  neighbor 89.110.29.197 activate
+  neighbor 89.110.29.201 activate
+  neighbor 89.110.29.210 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
+  neighbor 2A02:6B8:89:AC61:AC::42 activate
+ exit-address-family
+!
 ```
 
 #### Маршрутизатор R24:
 
 ```
-
+!
+router bgp 520
+ bgp router-id 24.24.24.24
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::41 remote-as 301
+ neighbor 89.110.29.209 remote-as 301
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::41 activate
+  neighbor 89.110.29.209 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::41 activate
+ exit-address-family
+!
 ```
 
 #### Маршрутизатор R22:
 
 ```
-
+!
+router bgp 101
+ bgp router-id 22.22.22.22
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::1 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::22 remote-as 301
+ neighbor 2A02:6B8:89:AC61:AC::32 remote-as 520
+ neighbor 89.110.29.193 remote-as 1001
+ neighbor 89.110.29.202 remote-as 301
+ neighbor 89.110.29.206 remote-as 520
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
+  neighbor 2A02:6B8:89:AC61:AC::32 activate
+  neighbor 89.110.29.193 activate
+  neighbor 89.110.29.202 activate
+  neighbor 89.110.29.206 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
+  neighbor 2A02:6B8:89:AC61:AC::32 activate
+ exit-address-family
+!
 ```
 
 #### Маршрутизатор R23:
 
 ```
-
+!
+router bgp 520
+ bgp router-id 23.23.23.23
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::31 remote-as 101
+ neighbor 89.110.29.205 remote-as 101
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::31 activate
+  neighbor 89.110.29.205 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::31 activate
+ exit-address-family
+!
 ```
 
 Проверим соседство командой show ip bgp summary.
@@ -273,6 +353,76 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 #### Маршрутизатор R21:
 
 ```
+R21#show ip bgp summary 
+BGP router identifier 21.21.21.21, local AS number 301
+BGP table version is 1, main routing table version 1
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::11
+                4         1001      75      74        1    0    0 01:04:19        0
+2A02:6B8:89:AC61:AC::21
+                4          101      31      29        1    0    0 00:25:05        0
+2A02:6B8:89:AC61:AC::42
+                4          520       2       2        1    0    0 00:00:18        0
+89.110.29.197   4         1001      73      73        1    0    0 01:04:16        0
+89.110.29.201   4          101      33      33        1    0    0 00:28:13        0
+89.110.29.210   4          520       5       3        1    0    0 00:01:11        0
+```
+
+#### Маршрутизатор R24:
+
+```
+R24#show ip bgp summary
+BGP router identifier 24.24.24.24, local AS number 520
+BGP table version is 1, main routing table version 1
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::41
+                4          301       2       2        1    0    0 00:00:28        0
+89.110.29.209   4          301       3       5        1    0    0 00:01:22        0
+```
+
+#### Маршрутизатор R22:
+
+```
+R22#show ip bgp summary 
+BGP router identifier 22.22.22.22, local AS number 101
+BGP table version is 1, main routing table version 1
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::1
+                4         1001      91      90        1    0    0 01:19:49        0
+2A02:6B8:89:AC61:AC::22
+                4          301      46      47        1    0    0 00:40:02        0
+2A02:6B8:89:AC61:AC::32
+                4          520       4       2        1    0    0 00:00:22        0
+89.110.29.193   4         1001      90      90        1    0    0 01:19:45        0
+89.110.29.202   4          301      50      50        1    0    0 00:43:09        0
+89.110.29.206   4          520      15      13        1    0    0 00:10:58        0
+```
+
+#### Маршрутизатор R23:
+
+```
+R23#show ip bgp summary 
+BGP router identifier 23.23.23.23, local AS number 520
+BGP table version is 1, main routing table version 1
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::31
+                4          101       2       4        1    0    0 00:00:46        0
+89.110.29.205   4          101      14      16        1    0    0 00:11:22        0
+```
+
+## Часть 4. Настройка eBGP между офисом С.-Петербург и провайдером Триада
+
+Необходимо включить на маршрутизаторах eBGP, назначить router-id и настроить между ними соседство для ipv4 и ipv6.
+
+В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R18:
+
+```
 
 ```
 
@@ -282,7 +432,27 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 
 ```
 
-#### Маршрутизатор R22:
+#### Маршрутизатор R26:
+
+```
+
+```
+
+Проверим соседство командой show ip bgp summary.
+
+#### Маршрутизатор R18:
+
+```
+
+```
+
+#### Маршрутизатор R24:
+
+```
+
+```
+
+#### Маршрутизатор R26:
 
 ```
 
@@ -293,8 +463,6 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 ```
 
 ```
-
-
 
 
 
