@@ -423,19 +423,74 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 #### Маршрутизатор R18:
 
 ```
-
+!
+router bgp 2042
+ bgp router-id 18.18.18.18
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::81 remote-as 520
+ neighbor 2A02:6B8:89:AC61:AC::91 remote-as 520
+ neighbor 89.110.29.225 remote-as 520
+ neighbor 89.110.29.229 remote-as 520
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::81 activate
+  neighbor 2A02:6B8:89:AC61:AC::91 activate
+  neighbor 89.110.29.225 activate
+  neighbor 89.110.29.229 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::81 activate
+  neighbor 2A02:6B8:89:AC61:AC::91 activate
+ exit-address-family
+!
 ```
 
 #### Маршрутизатор R24:
 
 ```
-
+!
+router bgp 520
+ bgp router-id 24.24.24.24
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::41 remote-as 301
+ neighbor 2A02:6B8:89:AC61:AC::92 remote-as 2042
+ neighbor 89.110.29.209 remote-as 301
+ neighbor 89.110.29.230 remote-as 2042
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::41 activate
+  neighbor 2A02:6B8:89:AC61:AC::92 activate
+  neighbor 89.110.29.209 activate
+  neighbor 89.110.29.230 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::41 activate
+  neighbor 2A02:6B8:89:AC61:AC::92 activate
+ exit-address-family
+!
 ```
 
 #### Маршрутизатор R26:
 
 ```
-
+!
+router bgp 520
+ bgp router-id 26.26.26.26
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::82 remote-as 2042
+ neighbor 89.110.29.226 remote-as 2042
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::82 activate
+  neighbor 89.110.29.226 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::82 activate
+ exit-address-family
+!
 ```
 
 Проверим соседство командой show ip bgp summary.
@@ -443,25 +498,46 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 #### Маршрутизатор R18:
 
 ```
+R18#show ip bgp summary 
+BGP router identifier 18.18.18.18, local AS number 2042
+BGP table version is 1, main routing table version 1
 
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::81
+                4          520       2       2        1    0    0 00:00:28        0
+2A02:6B8:89:AC61:AC::91
+                4          520       4       6        1    0    0 00:02:26        0
+89.110.29.225   4          520       5       3        1    0    0 00:01:24        0
+89.110.29.229   4          520       5       7        1    0    0 00:03:28        0
 ```
 
 #### Маршрутизатор R24:
 
 ```
+R24#show ip bgp summary 
+BGP router identifier 24.24.24.24, local AS number 520
+BGP table version is 1, main routing table version 1
 
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::41
+                4          301      30      32        1    0    0 00:26:17        0
+2A02:6B8:89:AC61:AC::92
+                4         2042       8       6        1    0    0 00:03:50        0
+89.110.29.209   4          301      31      33        1    0    0 00:27:11        0
+89.110.29.230   4         2042       9       7        1    0    0 00:04:52        0
 ```
 
 #### Маршрутизатор R26:
 
 ```
+R26#show ip bgp summary 
+BGP router identifier 26.26.26.26, local AS number 520
+BGP table version is 1, main routing table version 1
 
-```
-
-#### Маршрутизатор R23:
-
-```
-
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::82
+                4         2042       3       4        1    0    0 00:01:11        0
+89.110.29.226   4         2042       4       6        1    0    0 00:02:06        0
 ```
 
 
