@@ -540,7 +540,128 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 89.110.29.226   4         2042       4       6        1    0    0 00:02:06        0
 ```
 
+## Часть 4. Организация IP доступности между пограничными роутерами офисами Москва и С.-Петербург
 
+Необходимо настроить на R22 передачу маршрутов к подсети R14 и R21, на R21 передачу маршрутов к подсети R15, на R24 передачу маршрутов к подсети R18 для ipv4 и ipv6.
+
+В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R22:
+
+```
+!
+router bgp 101
+ bgp router-id 22.22.22.22
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::1 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::22 remote-as 301
+ neighbor 2A02:6B8:89:AC61:AC::32 remote-as 520
+ neighbor 89.110.29.193 remote-as 1001
+ neighbor 89.110.29.202 remote-as 301
+ neighbor 89.110.29.206 remote-as 520
+ !
+ address-family ipv4
+  network 89.110.29.192 mask 255.255.255.252
+  network 89.110.29.200 mask 255.255.255.252
+  neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
+  neighbor 2A02:6B8:89:AC61:AC::32 activate
+  neighbor 89.110.29.193 activate
+  neighbor 89.110.29.202 activate
+  neighbor 89.110.29.206 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2A02:6B8:89:AC61:AC::/124
+  network 2A02:6B8:89:AC61:AC::20/124
+  neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
+  neighbor 2A02:6B8:89:AC61:AC::32 activate
+ exit-address-family
+!
+```
+
+
+#### Маршрутизатор R21:
+
+```
+!
+router bgp 301
+ bgp router-id 21.21.21.21
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::11 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::21 remote-as 101
+ neighbor 2A02:6B8:89:AC61:AC::42 remote-as 520
+ neighbor 89.110.29.197 remote-as 1001
+ neighbor 89.110.29.201 remote-as 101
+ neighbor 89.110.29.210 remote-as 520
+ !
+ address-family ipv4
+  network 89.110.29.196 mask 255.255.255.252
+  neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
+  neighbor 2A02:6B8:89:AC61:AC::42 activate
+  neighbor 89.110.29.197 activate
+  neighbor 89.110.29.201 activate
+  neighbor 89.110.29.210 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2A02:6B8:89:AC61:AC::10/124
+  neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
+  neighbor 2A02:6B8:89:AC61:AC::42 activate
+ exit-address-family
+!
+```
+
+#### Маршрутизатор R24:
+
+```
+!
+router bgp 520
+ bgp router-id 24.24.24.24
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::41 remote-as 301
+ neighbor 2A02:6B8:89:AC61:AC::92 remote-as 2042
+ neighbor 89.110.29.209 remote-as 301
+ neighbor 89.110.29.230 remote-as 2042
+ !
+ address-family ipv4
+  network 89.110.29.228 mask 255.255.255.252
+  neighbor 2A02:6B8:89:AC61:AC::41 activate
+  neighbor 2A02:6B8:89:AC61:AC::92 activate
+  neighbor 89.110.29.209 activate
+  neighbor 89.110.29.230 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2A02:6B8:89:AC61:AC::90/124
+  neighbor 2A02:6B8:89:AC61:AC::41 activate
+  neighbor 2A02:6B8:89:AC61:AC::92 activate
+ exit-address-family
+!
+```
+
+Проверим доступность между пограничными роутерами офисами Москва и С.-Петербург с помощью просмотра вывода команды show ip route bgp и запуская ping:
+
+#### Маршрутизатор R18:
+
+```
+
+```
+
+#### Маршрутизатор R14:
+
+```
+
+```
+
+#### Маршрутизатор R15:
+
+```
+
+```
 
 
 
