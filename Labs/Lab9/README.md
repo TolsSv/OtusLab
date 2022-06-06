@@ -648,19 +648,87 @@ router bgp 520
 #### Маршрутизатор R18:
 
 ```
+R18#show ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
 
+Gateway of last resort is 89.110.29.229 to network 0.0.0.0
+
+      89.0.0.0/8 is variably subnetted, 7 subnets, 2 masks
+B        89.110.29.192/30 [20/0] via 89.110.29.229, 00:16:03
+B        89.110.29.196/30 [20/0] via 89.110.29.229, 00:21:01
+B        89.110.29.200/30 [20/0] via 89.110.29.229, 00:15:06
+R18#ping 89.110.29.193
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.193, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+R18#ping 2a02:6b8:89:ac61:ac::1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 2A02:6B8:89:AC61:AC::1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R18#ping 89.110.29.197         
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.197, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R18#ping 2a02:6b8:89:ac61:ac::11
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 2A02:6B8:89:AC61:AC::11, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ```
 
 #### Маршрутизатор R14:
 
 ```
+R14#show ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
 
+Gateway of last resort is 89.110.29.194 to network 0.0.0.0
+
+      89.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+B        89.110.29.196/30 [20/0] via 89.110.29.194, 00:23:09
+B        89.110.29.200/30 [20/0] via 89.110.29.194, 00:17:15
+B        89.110.29.228/30 [20/0] via 89.110.29.194, 00:24:35
 ```
 
 #### Маршрутизатор R15:
 
 ```
+R15#show ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
 
+Gateway of last resort is 89.110.29.198 to network 0.0.0.0
+
+      89.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+B        89.110.29.192/30 [20/0] via 89.110.29.198, 00:18:47
+B        89.110.29.200/30 [20/0] via 89.110.29.198, 00:17:50
+B        89.110.29.228/30 [20/0] via 89.110.29.198, 00:25:10
 ```
 
 
