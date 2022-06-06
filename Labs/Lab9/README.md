@@ -15,7 +15,7 @@
 Лабораторная работа разбита на 5 частей:
 1) Настройка eBGP между офисом Москва и двумя провайдерами - Киторн и Ламас
 2) Настройка eBGP между провайдерами Киторн и Ламас
-3) Настройка eBGP между Ламас и Триада
+3) Настройка eBGP между Ламас/Киторн и Триада
 4) Настройка eBGP между офисом С.-Петербург и провайдером Триада
 5) Организация IP доступности между пограничными роутерами офисами Москва и С.-Петербург
 
@@ -155,17 +155,27 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 #### Маршрутизатор R22:
 
 ```
+!
 router bgp 101
  bgp router-id 22.22.22.22
  bgp log-neighbor-changes
  neighbor 2A02:6B8:89:AC61:AC::1 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::22 remote-as 301
  neighbor 89.110.29.193 remote-as 1001
+ neighbor 89.110.29.202 remote-as 301
  !
  address-family ipv4
   neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
   neighbor 89.110.29.193 activate
+  neighbor 89.110.29.202 activate
  exit-address-family
  !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
+ exit-address-family
+!
 ```
 
 #### Маршрутизатор R21:
@@ -176,13 +186,22 @@ router bgp 301
  bgp router-id 21.21.21.21
  bgp log-neighbor-changes
  neighbor 2A02:6B8:89:AC61:AC::11 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::21 remote-as 101
  neighbor 89.110.29.197 remote-as 1001
+ neighbor 89.110.29.201 remote-as 101
  !
  address-family ipv4
   neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
   neighbor 89.110.29.197 activate
+  neighbor 89.110.29.201 activate
  exit-address-family
  !
+ address-family ipv6
+  neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
+ exit-address-family
+!
 ```
 
 Проверим соседство командой show ip bgp summary.
@@ -190,27 +209,95 @@ router bgp 301
 #### Маршрутизатор R22:
 
 ```
-R14#show ip bgp summary
-BGP router identifier 14.14.14.14, local AS number 1001
-BGP table version is 1, main routing table version 1
-
-Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-2A02:6B8:89:AC61:AC::2
-                4          101      41      42        1    0    0 00:35:57        0
-89.110.29.194   4          101      42      42        1    0    0 00:36:01        0           
-```
-
-#### Маршрутизатор R21:
-
-```
-R22#show ip bgp summary   
+R22#show ip bgp summary 
 BGP router identifier 22.22.22.22, local AS number 101
 BGP table version is 1, main routing table version 1
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 2A02:6B8:89:AC61:AC::1
-                4         1001       8       7        1    0    0 00:04:39        0
-89.110.29.193   4         1001       7       8        1    0    0 00:04:35        0
+                4         1001      48      46        1    0    0 00:40:46        0
+2A02:6B8:89:AC61:AC::22
+                4          301       3       5        1    0    0 00:00:58        0
+89.110.29.193   4         1001      47      48        1    0    0 00:40:42        0
+89.110.29.202   4          301       6       6        1    0    0 00:04:05        0           
 ```
+
+#### Маршрутизатор R21:
+
+```
+R21#show ip bgp summary 
+BGP router identifier 21.21.21.21, local AS number 301
+BGP table version is 1, main routing table version 1
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+2A02:6B8:89:AC61:AC::11
+                4         1001      48      47        1    0    0 00:40:04        0
+2A02:6B8:89:AC61:AC::21
+                4          101       4       2        1    0    0 00:00:51        0
+89.110.29.197   4         1001      46      47        1    0    0 00:40:01        0
+89.110.29.201   4          101       6       6        1    0    0 00:03:58        0
+```
+
+## Часть 3. Настройка eBGP между Ламас/Киторн и Триада
+
+Необходимо включить на маршрутизаторах eBGP, назначить router-id и настроить между ними соседство для ipv4 и ipv6.
+
+В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R21:
+
+```
+
+```
+
+#### Маршрутизатор R24:
+
+```
+
+```
+
+#### Маршрутизатор R22:
+
+```
+
+```
+
+#### Маршрутизатор R23:
+
+```
+
+```
+
+Проверим соседство командой show ip bgp summary.
+
+#### Маршрутизатор R21:
+
+```
+
+```
+
+#### Маршрутизатор R24:
+
+```
+
+```
+
+#### Маршрутизатор R22:
+
+```
+
+```
+
+#### Маршрутизатор R23:
+
+```
+
+```
+
+
+
+
+
+
 
 
