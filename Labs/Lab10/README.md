@@ -20,14 +20,74 @@
 
 ## Часть 1. Настроить iBGP в офисе Москва между маршрутизаторами R14 и R15
 
-Необходимо включить на маршрутизаторах R14, R22, R15, R21 eBGP, назначить им router-id и настроить между R14 и R22, R15 и R21 соседство для ipv4 и ipv6.
+Необходимо включить на маршрутизаторе R14 iBGP соседа R15, на маршрутизаторе R15 iBGP соседа R14. Настроить на R14 и R15 loopback интерфейсы и включить на них ospf,  настроить update-source на Loopback интерфейс для iBGP соседа.
 
 В выводе running-config маршрутизаторов появятся настройки:
 
 #### Маршрутизатор R14:
 
 ```
+!
+interface Loopback0
+ ip address 14.14.14.14 255.255.255.255
+ ip ospf 1 area 0
+!
+router bgp 1001
+ bgp router-id 14.14.14.14
+ bgp log-neighbor-changes
+ neighbor 15.15.15.15 remote-as 1001
+ neighbor 15.15.15.15 update-source Loopback0
+ neighbor 2A02:6B8:89:AC61:AC::2 remote-as 101
+ neighbor 89.110.29.194 remote-as 101
+ !
+```
 
+#### Маршрутизатор R15:
+
+```
+!
+interface Loopback0
+ ip address 15.15.15.15 255.255.255.255
+ ip ospf 1 area 0
+!
+router bgp 1001
+ bgp router-id 15.15.15.15
+ bgp log-neighbor-changes
+ neighbor 14.14.14.14 remote-as 1001
+ neighbor 14.14.14.14 update-source Loopback0
+ neighbor 2A02:6B8:89:AC61:AC::12 remote-as 301
+ neighbor 89.110.29.198 remote-as 301
+ !
+```
+
+Проверим корректность настройки командой show ip bgp summary:
+
+#### Маршрутизатор R14:
+
+```
+R14#show ip bgp summary 
+BGP router identifier 14.14.14.14, local AS number 1001
+BGP table version is 12, main routing table version 12
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+15.15.15.15     4         1001      10      11       12    0    0 00:05:19        0
+2A02:6B8:89:AC61:AC::2
+                4          101       0       0        1    0    0 00:11:49 Active
+89.110.29.194   4          101       0       0        1    0    0 00:11:59 Active
+```
+
+#### Маршрутизатор R15:
+
+```
+R15#show ip bgp summary 
+BGP router identifier 15.15.15.15, local AS number 1001
+BGP table version is 12, main routing table version 12
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+14.14.14.14     4         1001      10      10       12    0    0 00:05:02        0
+2A02:6B8:89:AC61:AC::12
+                4          301       0       0        1    0    0 00:11:02 Active
+89.110.29.198   4          301       0       0        1    0    0 00:11:31 Idle
 ```
 
 ## Часть 2. Настроить iBGP в провайдере Триада
