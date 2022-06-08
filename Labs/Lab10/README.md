@@ -416,30 +416,6 @@ B        89.110.29.228/30 [200/0] via 15.15.15.15, 00:13:09
 
 ## Часть 4. Настройть офис С.-Петербург так, чтобы трафик до любого офиса распределялся по двум линкам одновременно
 
-Сначвала проверим, что в выводе show ip route bgp маршрутизатора R18 маршруты указаны только через 1 маршрутизатор: 
-
-#### Маршрутизатор R18:
-
-```
-R18#sh ip route bgp
-Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
-       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
-       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
-       E1 - OSPF external type 1, E2 - OSPF external type 2
-       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
-       ia - IS-IS inter area, * - candidate default, U - per-user static route
-       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
-       a - application route
-       + - replicated route, % - next hop override
-
-Gateway of last resort is 89.110.29.229 to network 0.0.0.0
-
-      89.0.0.0/8 is variably subnetted, 7 subnets, 2 masks
-B        89.110.29.192/30 [20/0] via 89.110.29.229, 00:07:04
-B        89.110.29.196/30 [20/0] via 89.110.29.229, 00:07:04
-B        89.110.29.200/30 [20/0] via 89.110.29.229, 00:07:04
-```
-
 Необходимо настроить балансировку трафика на маршрутизаторе R18 между R24 И R26.
 
 В выводе running-config маршрутизаторов появятся настройки:
@@ -484,13 +460,17 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is 89.110.29.229 to network 0.0.0.0
 
-      89.0.0.0/8 is variably subnetted, 7 subnets, 2 masks
-B        89.110.29.192/30 [20/0] via 89.110.29.229, 00:08:05
-                          [20/0] via 89.110.29.225, 00:08:05
-B        89.110.29.196/30 [20/0] via 89.110.29.229, 00:08:05
-                          [20/0] via 89.110.29.225, 00:08:05
-B        89.110.29.200/30 [20/0] via 89.110.29.229, 00:08:05
-                          [20/0] via 89.110.29.225, 00:08:05
+      89.0.0.0/8 is variably subnetted, 9 subnets, 2 masks
+B        89.110.29.192/30 [20/0] via 89.110.29.229, 00:32:40
+                          [20/0] via 89.110.29.225, 00:32:40
+B        89.110.29.196/30 [20/0] via 89.110.29.229, 02:38:05
+                          [20/0] via 89.110.29.225, 02:38:05
+B        89.110.29.200/30 [20/0] via 89.110.29.229, 00:32:40
+                          [20/0] via 89.110.29.225, 00:32:40
+B        89.110.29.204/30 [20/0] via 89.110.29.229, 02:01:28
+                          [20/0] via 89.110.29.225, 02:01:28
+B        89.110.29.208/30 [20/0] via 89.110.29.229, 01:58:42
+                          [20/0] via 89.110.29.225, 01:58:42
 ```
 
 
