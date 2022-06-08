@@ -334,15 +334,85 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 
 ## Часть 3. Настройть офис Москва так, чтобы приоритетным провайдером стал Ламас
 
-Необходимо включить на маршрутизаторах R14, R22, R15, R21 eBGP, назначить им router-id и настроить между R14 и R22, R15 и R21 соседство для ipv4 и ipv6.
+Необходимо создать на маршрутизаторе R15 route-map для R21 меняющий local-pregerence на 250 и настроить route-map на BGP соседа R21.
 
 В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R15:
+
+```
+!
+route-map as301-in permit 10
+ set local-preference 250
+!
+address-family ipv4
+  neighbor 14.14.14.14 activate
+  neighbor 14.14.14.14 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 89.110.29.198 activate
+  neighbor 89.110.29.198 route-map as301-in in
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 14.14.14.14 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 route-map as301-in in
+ exit-address-family
+!
+```
+
+Проверим, что в as 1001 приоритетным провайдером является Ламас командой show ip route bgp:
+
+#### Маршрутизатор R15:
+
+```
+R15#sh ip route bgp                        
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 89.110.29.198 to network 0.0.0.0
+
+      89.0.0.0/8 is variably subnetted, 8 subnets, 2 masks
+B        89.110.29.192/30 [20/0] via 89.110.29.198, 00:12:47
+B        89.110.29.200/30 [20/0] via 89.110.29.198, 00:12:47
+B        89.110.29.204/30 [20/0] via 89.110.29.198, 00:12:47
+B        89.110.29.208/30 [20/0] via 89.110.29.198, 00:12:47
+B        89.110.29.224/30 [20/0] via 89.110.29.198, 00:12:47
+B        89.110.29.228/30 [20/0] via 89.110.29.198, 00:12:47
+```
 
 #### Маршрутизатор R14:
 
 ```
+R14#sh ip route bgp  
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
 
+Gateway of last resort is 89.110.29.194 to network 0.0.0.0
+
+      89.0.0.0/8 is variably subnetted, 8 subnets, 2 masks
+B        89.110.29.196/30 [200/0] via 15.15.15.15, 00:13:09
+B        89.110.29.200/30 [200/0] via 15.15.15.15, 00:13:09
+B        89.110.29.204/30 [200/0] via 15.15.15.15, 00:13:09
+B        89.110.29.208/30 [200/0] via 15.15.15.15, 00:13:09
+B        89.110.29.224/30 [200/0] via 15.15.15.15, 00:13:09
+B        89.110.29.228/30 [200/0] via 15.15.15.15, 00:13:09
 ```
+
 
 ## Часть 4. Настройть офис С.-Петербург так, чтобы трафик до любого офиса распределялся по двум линкам одновременно
 
