@@ -298,20 +298,82 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 
 ## Часть 4. Настройть офис С.-Петербург так, чтобы трафик до любого офиса распределялся по двум линкам одновременно
 
+Сначвала проверим, что в выводе show ip route bgp маршрутизатора R18 маршруты указаны только через 1 маршрутизатор: 
+
+#### Маршрутизатор R18:
+
+```
+R18#sh ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 89.110.29.229 to network 0.0.0.0
+
+      89.0.0.0/8 is variably subnetted, 7 subnets, 2 masks
+B        89.110.29.192/30 [20/0] via 89.110.29.229, 00:07:04
+B        89.110.29.196/30 [20/0] via 89.110.29.229, 00:07:04
+B        89.110.29.200/30 [20/0] via 89.110.29.229, 00:07:04
+```
+
 Необходимо настроить балансировку трафика на маршрутизаторе R18 между R24 И R26.
 
 В выводе running-config маршрутизаторов появятся настройки:
 
-#### Маршрутизатор R14:
+#### Маршрутизатор R18:
 
 ```
-
+!
+router bgp 2042
+ bgp router-id 18.18.18.18
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::81 remote-as 520
+ neighbor 2A02:6B8:89:AC61:AC::91 remote-as 520
+ neighbor 89.110.29.225 remote-as 520
+ neighbor 89.110.29.229 remote-as 520
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::81 activate
+  neighbor 2A02:6B8:89:AC61:AC::91 activate
+  neighbor 89.110.29.225 activate
+  neighbor 89.110.29.229 activate
+  maximum-paths 2
+ exit-address-family
+ !
 ```
 
-```
+Проверим, что в выводе команды show ip route bgp маршрутизатора R18 есть балансировка нагрузки: 
+
+#### Маршрутизатор R18:
 
 ```
+R18#sh ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
 
+Gateway of last resort is 89.110.29.229 to network 0.0.0.0
+
+      89.0.0.0/8 is variably subnetted, 7 subnets, 2 masks
+B        89.110.29.192/30 [20/0] via 89.110.29.229, 00:08:05
+                          [20/0] via 89.110.29.225, 00:08:05
+B        89.110.29.196/30 [20/0] via 89.110.29.229, 00:08:05
+                          [20/0] via 89.110.29.225, 00:08:05
+B        89.110.29.200/30 [20/0] via 89.110.29.229, 00:08:05
+                          [20/0] via 89.110.29.225, 00:08:05
+```
 
 
 
