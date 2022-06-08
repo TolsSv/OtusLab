@@ -20,17 +20,13 @@
 
 ## Часть 1. Настроить iBGP в офисе Москва между маршрутизаторами R14 и R15
 
-Необходимо включить на маршрутизаторе R14 iBGP соседа R15, на маршрутизаторе R15 iBGP соседа R14. Настроить на R14 и R15 loopback интерфейсы и включить на них ospf,  настроить update-source на Loopback интерфейс для iBGP соседа.
+Необходимо включить на маршрутизаторе R14 iBGP соседа R15, на маршрутизаторе R15 iBGP соседа R14. Настроить на R14 и R15 loopback интерфейсы и включить на них ospf,  настроить update-source на Loopback интерфейс для iBGP соседа и настроить next-hop-self.
 
 В выводе running-config маршрутизаторов появятся настройки:
 
 #### Маршрутизатор R14:
 
 ```
-!
-interface Loopback0
- ip address 14.14.14.14 255.255.255.255
- ip ospf 1 area 0
 !
 router bgp 1001
  bgp router-id 14.14.14.14
@@ -39,6 +35,13 @@ router bgp 1001
  neighbor 15.15.15.15 update-source Loopback0
  neighbor 2A02:6B8:89:AC61:AC::2 remote-as 101
  neighbor 89.110.29.194 remote-as 101
+ !
+ address-family ipv4
+  neighbor 15.15.15.15 activate
+  neighbor 15.15.15.15 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::2 activate
+  neighbor 89.110.29.194 activate
+ exit-address-family
  !
 ```
 
@@ -57,6 +60,13 @@ router bgp 1001
  neighbor 14.14.14.14 update-source Loopback0
  neighbor 2A02:6B8:89:AC61:AC::12 remote-as 301
  neighbor 89.110.29.198 remote-as 301
+ !
+ address-family ipv4
+  neighbor 14.14.14.14 activate
+  neighbor 14.14.14.14 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 89.110.29.198 activate
+ exit-address-family
  !
 ```
 
@@ -92,7 +102,7 @@ Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State
 
 ## Часть 2. Настроить iBGP в провайдере Триада
 
-Необходимо включить на маршрутизаторе R25 iBGP. На маршрутизаторах R23, R24, R25, R26 добавить loopback интерфейс, добавить в качестве iBGP соседней все маршрутизаторы Триада, включить isis на loopback интерфейсе, настроить update-source для всех соседей на Loopback интерфейс.
+Необходимо включить на маршрутизаторе R25 iBGP. На маршрутизаторах R23, R24, R25, R26 добавить loopback интерфейс, добавить в качестве iBGP соседней все маршрутизаторы Триада, включить isis на loopback интерфейсе, настроить update-source для всех соседей на Loopback интерфейс и настроить next-hop-self на R23, R24, R26 для iBGP соседей.
 
 В выводе running-config маршрутизаторов появятся настройки:
 
@@ -115,6 +125,17 @@ router bgp 520
  neighbor 26.26.26.26 update-source Loopback0
  neighbor 2A02:6B8:89:AC61:AC::31 remote-as 101
  neighbor 89.110.29.205 remote-as 101
+ !
+ address-family ipv4
+  neighbor 24.24.24.24 activate
+  neighbor 24.24.24.24 next-hop-self
+  neighbor 25.25.25.25 activate
+  neighbor 25.25.25.25 next-hop-self
+  neighbor 26.26.26.26 activate
+  neighbor 26.26.26.26 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::31 activate
+  neighbor 89.110.29.205 activate
+ exit-address-family
  !
 ```
 
@@ -139,6 +160,20 @@ router bgp 520
  neighbor 2A02:6B8:89:AC61:AC::92 remote-as 2042
  neighbor 89.110.29.209 remote-as 301
  neighbor 89.110.29.230 remote-as 2042
+ !
+ address-family ipv4
+  network 89.110.29.228 mask 255.255.255.252
+  neighbor 23.23.23.23 activate
+  neighbor 23.23.23.23 next-hop-self
+  neighbor 25.25.25.25 activate
+  neighbor 25.25.25.25 next-hop-self
+  neighbor 26.26.26.26 activate
+  neighbor 26.26.26.26 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::41 activate
+  neighbor 2A02:6B8:89:AC61:AC::92 activate
+  neighbor 89.110.29.209 activate
+  neighbor 89.110.29.230 activate
+ exit-address-family
  !
 ```
 
@@ -181,6 +216,19 @@ router bgp 520
  neighbor 25.25.25.25 update-source Loopback0
  neighbor 2A02:6B8:89:AC61:AC::82 remote-as 2042
  neighbor 89.110.29.226 remote-as 2042
+ !
+  !
+ address-family ipv4
+  network 89.110.29.224 mask 255.255.255.252
+  neighbor 23.23.23.23 activate
+  neighbor 23.23.23.23 next-hop-self
+  neighbor 24.24.24.24 activate
+  neighbor 24.24.24.24 next-hop-self
+  neighbor 25.25.25.25 activate
+  neighbor 25.25.25.25 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::82 activate
+  neighbor 89.110.29.226 activate
+ exit-address-family
  !
 ```
 
