@@ -218,7 +218,41 @@ Total number of prefixes 9
 #### Маршрутизатор R18:
 
 ```
-
+!
+router bgp 2042
+ bgp router-id 18.18.18.18
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::81 remote-as 520
+ neighbor 2A02:6B8:89:AC61:AC::91 remote-as 520
+ neighbor 89.110.29.225 remote-as 520
+ neighbor 89.110.29.229 remote-as 520
+ !
+ address-family ipv4
+  neighbor 2A02:6B8:89:AC61:AC::81 activate
+  neighbor 2A02:6B8:89:AC61:AC::91 activate
+  neighbor 89.110.29.225 activate
+  neighbor 89.110.29.225 prefix-list lab_out out
+  neighbor 89.110.29.229 activate
+  neighbor 89.110.29.229 prefix-list lab_out out
+  maximum-paths 2
+ exit-address-family
+ !
+ address-family ipv6
+  maximum-paths 2
+  neighbor 2A02:6B8:89:AC61:AC::81 activate
+  neighbor 2A02:6B8:89:AC61:AC::91 activate
+ exit-address-family
+!
+ip prefix-list lab_out seq 5 permit 192.168.18.128/30
+ip prefix-list lab_out seq 10 permit 192.168.18.132/30
+ip prefix-list lab_out seq 15 permit 192.168.18.136/30
+ip prefix-list lab_out seq 20 permit 192.168.18.152/30
+ip prefix-list lab_out seq 25 permit 192.168.18.144/30
+ip prefix-list lab_out seq 30 permit 192.168.18.140/30
+ip prefix-list lab_out seq 35 permit 192.168.18.148/30
+ip prefix-list lab_out seq 40 permit 192.168.18.156/30
+ip prefix-list lab_out seq 45 permit 192.168.18.0/25
+ip prefix-list lab_out seq 50 permit 80.80.1.0/25
 ```
 
 С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсирует R18:
@@ -226,7 +260,15 @@ Total number of prefixes 9
 #### Маршрутизатор R18:
 
 ```
+R18#sh ip bgp neighbors 89.110.29.225 advertised-routes 
 
+Total number of prefixes 0 
+R18#sh ip bgp neighbors 89.110.29.229 advertised-routes 
+
+Total number of prefixes 0 
+R18#write
+Building configuration...
+[OK]
 ```
 
 ## Часть 3. Настройка провайдера Киторн так, чтобы в офис Москва отдавался только маршрут по умолчанию
