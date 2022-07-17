@@ -68,6 +68,44 @@ route-map lab5 permit 20
 !
 ```
 
+Так как лабораторная работа выполняется уже после 10 лабораторной работы - на стенде уже настроен BGP. Для возможности проверить корректности настройки на маршрутизаторах R25 и R26 были настроены маршруты по умолчанию до подсетей 801 и 103 через R28, и настроена редистрибуция статических маршрутов в BGP. Таким образом между Триадой и Чокурды появилась ip связность - можно проверить крректность настройки PBR с помощью команды traceroute c и SW29 и ПК VPC30 и VPC31 до маршрутизатора R23.
+
+#### Коммутатор SW29:
+
+```
+SW29#traceroute 192.168.52.2
+Type escape sequence to abort.
+Tracing the route to 192.168.52.2
+VRF info: (vrf in name/id, vrf out name/id)
+  1 80.80.1.129 2 msec 0 msec 1 msec
+  2  * 
+    89.110.29.221 0 msec 1 msec
+  3 192.168.52.5 0 msec 1 msec 1 msec
+  4 192.168.52.2 1 msec *  1 msec
+```
+
+#### ПК VPC30:
+
+```
+VPCS> traceroute 192.168.52.2
+Bad command: "traceroute 192.168.52.2". Use ? for help.
+
+VPCS> trace 192.168.52.2     
+trace to 192.168.52.2, 8 hops max, press Ctrl+C to stop
+ 1   192.168.28.1   0.636 ms  0.304 ms  0.278 ms
+ 2     *89.110.29.217   0.851 ms  0.913 ms
+ 3   *192.168.52.2   1.118 ms (ICMP type:3, code:3, Destination port unreachable)  *
+```
+
+#### ПК VPC31:
+
+```
+VPCS> trace 192.168.52.2
+trace to 192.168.52.2, 8 hops max, press Ctrl+C to stop
+ 1   192.168.28.1   0.549 ms  0.353 ms  0.309 ms
+ 2   89.110.29.217   0.579 ms  0.588 ms  0.659 ms
+ 3   *192.168.52.2   0.912 ms (ICMP type:3, code:3, Destination port unreachable)  *
+```
 
 ## Часть 2. Настройка отслеживания линка через технологию IP SLA
 
@@ -78,46 +116,8 @@ route-map lab5 permit 20
 #### Маршрутизатор R14:
 
 ```
-!
-interface Ethernet0/2
- no ip address
- ip policy route-map lab5
-!
-interface Ethernet0/2.103
- description Cho_Client
- encapsulation dot1Q 103
- ip address 192.168.28.1 255.255.255.0
- ip policy route-map lab5
- ipv6 address FE80::28 link-local
- ipv6 address FDE8:8A:FC:1:28::1/80
-!
-interface Ethernet0/2.801
- encapsulation dot1Q 801
- ip address 80.80.1.129 255.255.255.192
- ip policy route-map lab5
- ipv6 address FE80::28 link-local
- ipv6 address 2A02:6B8:89:AC62::101/120
-!
-!
-ip access-list standard acl103
- permit 192.168.28.0 0.0.0.255
- deny   any
-ip access-list standard acl801
- permit 80.80.1.128 0.0.0.63
- deny   any
-!
-!
-route-map lab5 permit 10
- match ip address acl801
- set ip next-hop 89.110.29.221
-!
-route-map lab5 permit 20
- match ip address acl103
- set ip next-hop 89.110.29.217
-!
-```
 
-Так как лабораторная работа выполняется уже после 10 лабораторной работы - на стенде уже настроен BGP. Для возможности проверить корректности настройки на маршрутизаторах R25 и R26 были настроены маршруты по умолчанию до подсетей 801 и 103 через R28, и настроена редистрибуция статических маршрутов в BGP. Таким образом между Триадой и Чокурды появилась ip связность - можно проверить крректность настройки PBR с помощью команды traceroute c и SW29 и ПК VPC30 и VPC31 до маршрутизатора R23.
+```
 
 ## Часть 3. Настройка для офиса Лабытнанги маршрута по-умолчанию
 
