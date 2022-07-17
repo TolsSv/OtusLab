@@ -46,10 +46,46 @@
 #### Маршрутизатор R14:
 
 ```
-
+!
+interface Ethernet0/2
+ no ip address
+ ip policy route-map lab5
+!
+interface Ethernet0/2.103
+ description Cho_Client
+ encapsulation dot1Q 103
+ ip address 192.168.28.1 255.255.255.0
+ ip policy route-map lab5
+ ipv6 address FE80::28 link-local
+ ipv6 address FDE8:8A:FC:1:28::1/80
+!
+interface Ethernet0/2.801
+ encapsulation dot1Q 801
+ ip address 80.80.1.129 255.255.255.192
+ ip policy route-map lab5
+ ipv6 address FE80::28 link-local
+ ipv6 address 2A02:6B8:89:AC62::101/120
+!
+!
+ip access-list standard acl103
+ permit 192.168.28.0 0.0.0.255
+ deny   any
+ip access-list standard acl801
+ permit 80.80.1.128 0.0.0.63
+ deny   any
+!
+!
+route-map lab5 permit 10
+ match ip address acl801
+ set ip next-hop 89.110.29.221
+!
+route-map lab5 permit 20
+ match ip address acl103
+ set ip next-hop 89.110.29.217
+!
 ```
 
-
+Так как лабораторная работа выполняется уже после 10 лабораторной работы - на стенде уже настроен BGP. Для возможности проверить корректности настройки на маршрутизаторах R25 и R26 были настроены маршруты по умолчанию до подсетей 801 и 103 через R28, и настроена редистрибуция статических маршрутов в BGP. Таким образом между Триадой и Чокурды появилась ip связность - можно проверить крректность настройки PBR с помощью команды traceroute c и SW29 и ПК VPC30 и VPC31 до маршрутизатора R23.
 
 ## Часть 3. Настройка для офиса Лабытнанги маршрута по-умолчанию
 
