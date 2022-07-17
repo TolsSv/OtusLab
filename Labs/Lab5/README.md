@@ -111,19 +111,55 @@ trace to 192.168.52.2, 8 hops max, press Ctrl+C to stop
 
 ## Часть 2. Настройка отслеживания линка через технологию IP SLA
 
-Необходимо глобально включить на маршрутизаторах и L3 комутаторах ospf, назначить router-id, перевести не участвующие в ospf интерфейсы в режим passive, включить на интерфейсах ospf ipv4 и ipv6.
+Настроим ip sla на маршрутизаторе R28 для проверки доступности маршрутизаторов провайдера R25 и R26.
 
-В выводе running-config маршрутизаторов появятся настройки:
+В выводе running-config маршрутизатора R28 появятся настройки:
 
-#### Маршрутизатор R14:
+#### Маршрутизатор R28:
 
 ```
+!
+ip sla 1
+ icmp-echo 89.110.29.221
+ frequency 20
+ip sla schedule 1 life forever start-time now
+ip sla 2
+ icmp-echo 89.110.29.217
+ frequency 20
+ip sla schedule 2 life forever start-time now
+!
+```
 
+Проверим работоспособность ip sla на маршрутизаторе R28 введя команду sh ip sla statistics:
+
+#### Маршрутизатор R28:
+
+```
+R28#sh ip sla statistics 
+IPSLAs Latest Operation Statistics
+
+IPSLA operation id: 1
+Latest RTT: 1 milliseconds
+Latest operation start time: 21:40:51 msk Sun Jul 17 2022
+Latest operation return code: OK
+Number of successes: 25
+Number of failures: 0
+Operation time to live: Forever
+
+
+
+IPSLA operation id: 2
+Latest RTT: 1 milliseconds
+Latest operation start time: 21:40:59 msk Sun Jul 17 2022
+Latest operation return code: OK
+Number of successes: 24
+Number of failures: 0
+Operation time to live: Forever
 ```
 
 ## Часть 3. Настройка для офиса Лабытнанги маршрута по-умолчанию
 
-Необходимо настроить маршрут по умолчанию для ipv4 и ipv6 на маршрутизаторе R27.
+Необходимо настроить на маршрутизаторе R27 ipv4 и ipv6 маршрут по умолчанию.
 
 В выводе running-config маршрутизатора R27 появятся настройки:
 
