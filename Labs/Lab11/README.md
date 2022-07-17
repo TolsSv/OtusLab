@@ -266,9 +266,6 @@ Total number of prefixes 0
 R18#sh ip bgp neighbors 89.110.29.229 advertised-routes 
 
 Total number of prefixes 0 
-R18#write
-Building configuration...
-[OK]
 ```
 
 ## Часть 3. Настройка провайдера Киторн так, чтобы в офис Москва отдавался только маршрут по умолчанию
