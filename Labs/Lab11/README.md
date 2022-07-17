@@ -23,7 +23,7 @@
 
 ## Часть 1. Настройка фильтрации в офисе Москва так, чтобы не появилось транзитного трафика(As-path)
 
-На маршрутизаторах R14 и R15 необходимо создать и назначить на интерфейс в сторону провайдера as-path фильтр разрешающий отправку update сообщений только о своих внутренних подсетях. 
+На маршрутизаторах R14 и R15 необходимо создать и назначить на интерфейс в сторону провайдера as-path фильтр разрешающий анонсировать update только о своих внутренних подсетях. 
 
 С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
 
@@ -164,9 +164,64 @@ Total number of prefixes 0
 
 ## Часть 2. Настройка фильтрации в офисе С.-Петербург так, чтобы не появилось транзитного трафика(Prefix-list)
 
-Необходимо включить на маршрутизаторе R14 iBGP соседа R15, на маршрутизаторе R15 iBGP соседа R14. Настроить на R14 и R15 loopback интерфейсы и включить на них ospf,  настроить update-source на Loopback интерфейс для iBGP соседа и настроить next-hop-self.
+Необходимо настроить на маршрутизаторе R18 Prefix-list разрешающий анонсировать update только о своих внутренних подсетях.
 
-В выводе running-config маршрутизаторов появятся настройки:
+С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсирует R18:
+
+#### Маршрутизатор R18:
+
+```
+R18#sh ip bgp neighbors 89.110.29.229 advertised-routes 
+BGP table version is 16, local router ID is 18.18.18.18
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  80.80.1.128/26   89.110.29.229                          0 520 ?
+ *>  89.110.29.192/30 89.110.29.225                          0 520 101 i
+ *>  89.110.29.196/30 89.110.29.229                          0 520 301 i
+ *>  89.110.29.200/30 89.110.29.225                          0 520 101 i
+ *>  89.110.29.204/30 89.110.29.225                          0 520 101 i
+ *>  89.110.29.208/30 89.110.29.229                          0 520 301 i
+ r>  89.110.29.224/30 89.110.29.229                          0 520 i
+ r>  89.110.29.228/30 89.110.29.229            0             0 520 i
+ *>  192.168.28.0     89.110.29.229                          0 520 ?
+
+Total number of prefixes 9 
+R18#sh ip bgp neighbors 89.110.29.225 advertised-routes 
+BGP table version is 16, local router ID is 18.18.18.18
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  80.80.1.128/26   89.110.29.229                          0 520 ?
+ *>  89.110.29.192/30 89.110.29.225                          0 520 101 i
+ *>  89.110.29.196/30 89.110.29.229                          0 520 301 i
+ *>  89.110.29.200/30 89.110.29.225                          0 520 101 i
+ *>  89.110.29.204/30 89.110.29.225                          0 520 101 i
+ *>  89.110.29.208/30 89.110.29.229                          0 520 301 i
+ r>  89.110.29.224/30 89.110.29.229                          0 520 i
+ r>  89.110.29.228/30 89.110.29.229            0             0 520 i
+ *>  192.168.28.0     89.110.29.229                          0 520 ?
+
+Total number of prefixes 9 
+```
+
+Настроим Prefix-list. В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R18:
+
+```
+
+```
+
+С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсирует R18:
 
 #### Маршрутизатор R18:
 
