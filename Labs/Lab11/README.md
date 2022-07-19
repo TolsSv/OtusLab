@@ -270,7 +270,7 @@ Total number of prefixes 0
 
 ## Часть 3. Настройка провайдера Киторн так, чтобы в офис Москва отдавался только маршрут по умолчанию
 
-На маршрутизаторе R22 необходимо создать distribute-list куда попадают все маршруты, создать route-map по этому distribute-list в котором будет отправляться маршрут по умолчанию и назначить route-map на интерфейс в сторону R14.
+На маршрутизаторе R22 необходимо создать prefix-list куда попадает маршрут по умолчанию, создать route-map по этому prefix-list, назначить route-map и настроить default-originate на соседа R14.
 
 С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону R14 анонсирует R22:
 
@@ -278,7 +278,7 @@ Total number of prefixes 0
 
 ```
 R22#sh ip bgp neighbors 89.110.29.193 advertised-routes 
-BGP table version is 10, local router ID is 22.22.22.22
+BGP table version is 11, local router ID is 22.22.22.22
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -304,10 +304,68 @@ Total number of prefixes 9
 #### Маршрутизатор R22:
 
 ```
-
+!
+router bgp 101
+ bgp router-id 22.22.22.22
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::1 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::22 remote-as 301
+ neighbor 2A02:6B8:89:AC61:AC::32 remote-as 520
+ neighbor 89.110.29.193 remote-as 1001
+ neighbor 89.110.29.202 remote-as 301
+ neighbor 89.110.29.206 remote-as 520
+ !
+ address-family ipv4
+  network 89.110.29.192 mask 255.255.255.252
+  network 89.110.29.200 mask 255.255.255.252
+  network 89.110.29.204 mask 255.255.255.252
+  neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
+  neighbor 2A02:6B8:89:AC61:AC::32 activate
+  neighbor 89.110.29.193 activate
+  neighbor 89.110.29.193 default-originate
+  neighbor 89.110.29.193 route-map map-out out
+  neighbor 89.110.29.202 activate
+  neighbor 89.110.29.206 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2A02:6B8:89:AC61:AC::/124
+  network 2A02:6B8:89:AC61:AC::20/124
+  network 2A02:6B8:89:AC61:AC::30/124
+  neighbor 2A02:6B8:89:AC61:AC::1 activate
+  neighbor 2A02:6B8:89:AC61:AC::22 activate
+  neighbor 2A02:6B8:89:AC61:AC::32 activate
+ exit-address-family
+!
+ip prefix-list default seq 10 permit 0.0.0.0/0
+!
+route-map map-out permit 10
+ match ip address prefix-list default
+!
 ```
 
-## Часть 3. Настройка провайдера Ламас так, чтобы в офис Москва отдавался только маршрут по умолчанию и префикс офиса С.-Петербург
+С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону R14 анонсирует R22:
+
+#### Маршрутизатор R22:
+
+```
+R22#sh ip bgp neighbors 89.110.29.193 advertised-routes 
+BGP table version is 12, local router ID is 22.22.22.22
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+Originating default network 0.0.0.0
+
+     Network          Next Hop            Metric LocPrf Weight Path
+
+Total number of prefixes 0 
+```
+
+## Часть 4. Настройка провайдера Ламас так, чтобы в офис Москва отдавался только маршрут по умолчанию и префикс офиса С.-Петербург
 
 Необходимо включить на маршрутизаторе R14 iBGP соседа R15, на маршрутизаторе R15 iBGP соседа R14. Настроить на R14 и R15 loopback интерфейсы и включить на них ospf,  настроить update-source на Loopback интерфейс для iBGP соседа и настроить next-hop-self.
 
