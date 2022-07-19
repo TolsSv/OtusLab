@@ -367,12 +367,99 @@ Total number of prefixes 0
 
 ## Часть 4. Настройка провайдера Ламас так, чтобы в офис Москва отдавался только маршрут по умолчанию и префикс офиса С.-Петербург
 
-Необходимо включить на маршрутизаторе R14 iBGP соседа R15, на маршрутизаторе R15 iBGP соседа R14. Настроить на R14 и R15 loopback интерфейсы и включить на них ospf,  настроить update-source на Loopback интерфейс для iBGP соседа и настроить next-hop-self.
+На маршрутизаторе R21 необходимо создать prefix-list куда попадает маршрут по умолчанию и префикс офиса С.-Петербург, создать route-map по этому prefix-list, назначить route-map и настроить default-originate на соседа R15.
+
+С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону R15 анонсирует R21:
+
+#### Маршрутизатор R21:
+
+```
+R21#sh ip bgp neighbors 89.110.29.197 advertised-routes 
+BGP table version is 10, local router ID is 21.21.21.21
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  80.80.1.128/26   89.110.29.210                          0 520 ?
+ *>  89.110.29.192/30 89.110.29.201            0             0 101 i
+ *>  89.110.29.196/30 0.0.0.0                  0         32768 i
+ r>  89.110.29.200/30 89.110.29.201            0             0 101 i
+ *>  89.110.29.204/30 89.110.29.201            0             0 101 i
+ *>  89.110.29.208/30 0.0.0.0                  0         32768 i
+ *>  89.110.29.224/30 89.110.29.210                          0 520 i
+ *>  89.110.29.228/30 89.110.29.210            0             0 520 i
+ *>  192.168.28.0     89.110.29.210                          0 520 ?
+
+Total number of prefixes 9 
+```
 
 В выводе running-config маршрутизаторов появятся настройки:
 
 #### Маршрутизатор R21:
 
 ```
+!
+router bgp 301
+ bgp router-id 21.21.21.21
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::11 remote-as 1001
+ neighbor 2A02:6B8:89:AC61:AC::21 remote-as 101
+ neighbor 2A02:6B8:89:AC61:AC::42 remote-as 520
+ neighbor 89.110.29.197 remote-as 1001
+ neighbor 89.110.29.201 remote-as 101
+ neighbor 89.110.29.210 remote-as 520
+ !
+ address-family ipv4
+  network 89.110.29.196 mask 255.255.255.252
+  network 89.110.29.208 mask 255.255.255.252
+  neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
+  neighbor 2A02:6B8:89:AC61:AC::42 activate
+  neighbor 89.110.29.197 activate
+  neighbor 89.110.29.197 default-originate
+  neighbor 89.110.29.197 route-map map-out out
+  neighbor 89.110.29.201 activate
+  neighbor 89.110.29.210 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2A02:6B8:89:AC61:AC::10/124
+  network 2A02:6B8:89:AC61:AC::40/124
+  neighbor 2A02:6B8:89:AC61:AC::11 activate
+  neighbor 2A02:6B8:89:AC61:AC::21 activate
+  neighbor 2A02:6B8:89:AC61:AC::42 activate
+ exit-address-family
+!
+ip prefix-list lab11 seq 20 permit 89.110.29.228/30
+ip prefix-list lab11 seq 30 permit 89.110.29.224/30
+ip prefix-list lab11 seq 40 permit 0.0.0.0/0
+!
+route-map map-out permit 10
+ match ip address prefix-list lab11
+!
+```
 
+С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону R15 анонсирует R21:
+
+#### Маршрутизатор R21:
+
+```
+R21#sh ip bgp neighbors 89.110.29.197 advertised-routes 
+BGP table version is 11, local router ID is 21.21.21.21
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+Originating default network 0.0.0.0
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  89.110.29.224/30 89.110.29.210                          0 520 i
+ *>  89.110.29.228/30 89.110.29.210            0             0 520 i
+
+Total number of prefixes 2 
 ```
