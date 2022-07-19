@@ -1,0 +1,147 @@
+R14:
+R14#ping 89.110.29.206
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.206, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+R14#ping 89.110.29.194
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.194, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/4 ms
+R14#ping 89.110.29.198
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.198, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+R14#QP5P:QQ
+R14#trace 89.110.29.206
+Type escape sequence to abort.
+Tracing the route to 89.110.29.206
+VRF info: (vrf in name/id, vrf out name/id)
+  1 192.168.10.10 [AS 301] 1 msec
+    192.168.10.18 [AS 301] 0 msec
+    192.168.10.10 [AS 301] 1 msec
+  2 192.168.10.13 [AS 301] 0 msec
+    192.168.10.21 [AS 301] 0 msec
+    192.168.10.13 [AS 301] 1 msec
+  3  *  *  * 
+
+R14#sh ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 192.168.10.18 to network 0.0.0.0
+
+O*E2  0.0.0.0/0 [110/1] via 192.168.10.18, 03:05:29, Ethernet0/1
+                [110/1] via 192.168.10.10, 03:05:29, Ethernet0/0
+      14.0.0.0/32 is subnetted, 1 subnets
+C        14.14.14.14 is directly connected, Loopback0
+      15.0.0.0/32 is subnetted, 1 subnets
+O        15.15.15.15 [110/21] via 192.168.10.18, 07:13:24, Ethernet0/1
+                     [110/21] via 192.168.10.10, 07:13:24, Ethernet0/0
+      80.0.0.0/26 is subnetted, 1 subnets
+O IA     80.80.1.192 [110/30] via 192.168.10.18, 07:13:14, Ethernet0/1
+                     [110/30] via 192.168.10.10, 07:13:23, Ethernet0/0
+      89.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
+C        89.110.29.192/30 is directly connected, Ethernet0/2
+L        89.110.29.193/32 is directly connected, Ethernet0/2
+B        89.110.29.224/30 [200/0] via 15.15.15.15, 03:01:30
+B        89.110.29.228/30 [200/0] via 15.15.15.15, 03:01:30
+      192.168.10.0/24 is variably subnetted, 16 subnets, 3 masks
+C        192.168.10.0/30 is directly connected, Ethernet0/3
+L        192.168.10.1/32 is directly connected, Ethernet0/3
+O IA     192.168.10.4/30 [110/30] via 192.168.10.18, 07:13:24, Ethernet0/1
+                         [110/30] via 192.168.10.10, 07:13:24, Ethernet0/0
+C        192.168.10.8/30 is directly connected, Ethernet0/0
+L        192.168.10.9/32 is directly connected, Ethernet0/0
+O        192.168.10.12/30 [110/20] via 192.168.10.18, 07:13:24, Ethernet0/1
+C        192.168.10.16/30 is directly connected, Ethernet0/1
+L        192.168.10.17/32 is directly connected, Ethernet0/1
+O        192.168.10.20/30 [110/20] via 192.168.10.10, 07:13:24, Ethernet0/0
+O IA     192.168.10.24/30 [110/20] via 192.168.10.10, 07:13:24, Ethernet0/0
+O IA     192.168.10.28/30 [110/20] via 192.168.10.10, 07:13:24, Ethernet0/0
+O IA     192.168.10.32/30 [110/20] via 192.168.10.18, 07:13:24, Ethernet0/1
+O IA     192.168.10.36/30 [110/20] via 192.168.10.18, 07:13:24, Ethernet0/1
+O IA     192.168.10.40/30 [110/30] via 192.168.10.18, 07:13:14, Ethernet0/1
+                          [110/30] via 192.168.10.10, 07:13:23, Ethernet0/0
+O IA     192.168.10.128/26 [110/30] via 192.168.10.18, 07:13:14, Ethernet0/1
+                           [110/30] via 192.168.10.10, 07:13:23, Ethernet0/0
+O IA     192.168.10.192/26 [110/30] via 192.168.10.18, 07:13:14, Ethernet0/1
+                           [110/30] via 192.168.10.10, 07:13:24, Ethernet0/0
+
+R15:
+
+R15#ping 89.110.29.206
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.206, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R15#ping 89.110.29.198
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.198, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R15#trace 89.110.29.206
+Type escape sequence to abort.
+Tracing the route to 89.110.29.206
+VRF info: (vrf in name/id, vrf out name/id)
+  1 89.110.29.198 1 msec 0 msec 1 msec
+  2 89.110.29.201 0 msec 1 msec 0 msec
+  3 89.110.29.206 1 msec *  1 msec
+
+R15#sh ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 89.110.29.198 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 89.110.29.198
+      14.0.0.0/32 is subnetted, 1 subnets
+O        14.14.14.14 [110/21] via 192.168.10.22, 07:10:44, Ethernet0/1
+                     [110/21] via 192.168.10.14, 07:10:44, Ethernet0/0
+      15.0.0.0/32 is subnetted, 1 subnets
+C        15.15.15.15 is directly connected, Loopback0
+      80.0.0.0/26 is subnetted, 1 subnets
+O IA     80.80.1.192 [110/30] via 192.168.10.22, 07:10:42, Ethernet0/1
+                     [110/30] via 192.168.10.14, 07:10:32, Ethernet0/0
+      89.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
+C        89.110.29.196/30 is directly connected, Ethernet0/2
+L        89.110.29.197/32 is directly connected, Ethernet0/2
+B        89.110.29.224/30 [20/0] via 89.110.29.198, 02:58:48
+B        89.110.29.228/30 [20/0] via 89.110.29.198, 02:58:48
+      192.168.10.0/24 is variably subnetted, 16 subnets, 3 masks
+O IA     192.168.10.0/30 [110/30] via 192.168.10.22, 07:10:44, Ethernet0/1
+                         [110/30] via 192.168.10.14, 07:10:44, Ethernet0/0
+C        192.168.10.4/30 is directly connected, Ethernet0/3
+L        192.168.10.5/32 is directly connected, Ethernet0/3
+O        192.168.10.8/30 [110/20] via 192.168.10.22, 07:10:44, Ethernet0/1
+C        192.168.10.12/30 is directly connected, Ethernet0/0
+L        192.168.10.13/32 is directly connected, Ethernet0/0
+O        192.168.10.16/30 [110/20] via 192.168.10.14, 07:10:44, Ethernet0/0
+C        192.168.10.20/30 is directly connected, Ethernet0/1
+L        192.168.10.21/32 is directly connected, Ethernet0/1
+O IA     192.168.10.24/30 [110/20] via 192.168.10.22, 07:10:54, Ethernet0/1
+O IA     192.168.10.28/30 [110/20] via 192.168.10.22, 07:10:54, Ethernet0/1
+O IA     192.168.10.32/30 [110/20] via 192.168.10.14, 07:10:54, Ethernet0/0
+O IA     192.168.10.36/30 [110/20] via 192.168.10.14, 07:10:54, Ethernet0/0
+O IA     192.168.10.40/30 [110/30] via 192.168.10.22, 07:10:42, Ethernet0/1
+                          [110/30] via 192.168.10.14, 07:10:32, Ethernet0/0
+O IA     192.168.10.128/26 [110/30] via 192.168.10.22, 07:10:42, Ethernet0/1
+                           [110/30] via 192.168.10.14, 07:10:32, Ethernet0/0
+O IA     192.168.10.192/26 [110/30] via 192.168.10.22, 07:10:42, Ethernet0/1
+                           [110/30] via 192.168.10.14, 07:10:32, Ethernet0/0

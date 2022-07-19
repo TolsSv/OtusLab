@@ -1,0 +1,172 @@
+
+!
+! Last configuration change at 19:45:57 msk Tue Jul 19 2022
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R14
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 121A09160118
+!
+no aaa new-model
+clock timezone msk 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ no shutdown
+ ip address 14.14.14.14 255.255.255.255
+ ip ospf 1 area 0
+!
+interface Ethernet0/0
+ no shutdown
+ ip address 192.168.10.9 255.255.255.252
+ ip ospf 1 area 0
+ ipv6 address FE80::14 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:21/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/1
+ no shutdown
+ ip address 192.168.10.17 255.255.255.252
+ ip ospf 1 area 0
+ ipv6 address FE80::14 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:41/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/2
+ no shutdown
+ ip address 89.110.29.193 255.255.255.252
+ ipv6 address FE80::14 link-local
+ ipv6 address 2A02:6B8:89:AC61:AC::1/124
+!
+interface Ethernet0/3
+ no shutdown
+ ip address 192.168.10.1 255.255.255.252
+ ip ospf 1 area 101
+ ipv6 address FE80::14 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:1/124
+ ipv6 ospf 1 area 101
+!
+router ospf 1
+ router-id 14.14.14.14
+ area 101 stub no-summary
+ passive-interface Ethernet0/2
+ default-information originate
+!
+router bgp 1001
+ bgp router-id 14.14.14.14
+ bgp log-neighbor-changes
+ neighbor 15.15.15.15 remote-as 1001
+ neighbor 15.15.15.15 update-source Loopback0
+ neighbor 2A02:6B8:89:AC61:AC::2 remote-as 101
+ neighbor 89.110.29.194 remote-as 101
+ !
+ address-family ipv4
+  neighbor 15.15.15.15 activate
+  neighbor 15.15.15.15 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::2 activate
+  neighbor 2A02:6B8:89:AC61:AC::2 filter-list 1 in
+  neighbor 89.110.29.194 activate
+  neighbor 89.110.29.194 filter-list 1 out
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 15.15.15.15 activate
+  neighbor 2A02:6B8:89:AC61:AC::2 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip as-path access-list 1 permit ^$
+ip as-path access-list 1 deny .*
+!
+no ip http server
+no ip http secure-server
+!
+ipv6 route ::/0 2A02:6B8:89:AC61:AC::2
+ipv6 router ospf 1
+ area 101 stub no-summary
+ default-information originate
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+banner motd Unautorized access is prohibited
+!
+line con 0
+ password 7 104D000A0618
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 060506324F41
+ login
+ transport input none
+line vty 1 4
+ login
+ transport input none
+!
+!
+end

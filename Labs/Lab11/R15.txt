@@ -1,0 +1,176 @@
+Building configuration...
+
+Current configuration : 3073 bytes
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R15
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 1511070D1739
+!
+no aaa new-model
+clock timezone msk 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!         
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 15.15.15.15 255.255.255.255
+ ip ospf 1 area 0
+!
+interface Ethernet0/0
+ ip address 192.168.10.13 255.255.255.252
+ ip ospf 1 area 0
+ ipv6 address FE80::15 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:31/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/1
+ ip address 192.168.10.21 255.255.255.252
+ ip ospf 1 area 0
+ ipv6 address FE80::15 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:51/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/2
+ ip address 89.110.29.197 255.255.255.252
+ ipv6 address FE80::15 link-local
+ ipv6 address 2A02:6B8:89:AC61:AC::11/124
+!
+!
+interface Ethernet0/3
+ ip address 192.168.10.5 255.255.255.252
+ ip ospf 1 area 102
+ ipv6 address FE80::15 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:11/124
+ ipv6 ospf 1 area 102
+!
+router ospf 1
+ router-id 15.15.15.15
+ area 102 filter-list prefix lab101 in
+ passive-interface Ethernet0/2
+ default-information originate
+!
+router bgp 1001
+ bgp router-id 15.15.15.15
+ bgp log-neighbor-changes
+ neighbor 14.14.14.14 remote-as 1001
+ neighbor 14.14.14.14 update-source Loopback0
+ neighbor 2A02:6B8:89:AC61:AC::12 remote-as 301
+ neighbor 89.110.29.198 remote-as 301
+ !
+ address-family ipv4
+  neighbor 14.14.14.14 activate
+  neighbor 14.14.14.14 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 filter-list 1 out
+  neighbor 89.110.29.198 activate
+  neighbor 89.110.29.198 route-map as301-in in
+  neighbor 89.110.29.198 filter-list 1 out
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 14.14.14.14 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 route-map as301-in in
+  neighbor 2A02:6B8:89:AC61:AC::12 filter-list 1 out
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip as-path access-list 1 permit ^$
+ip as-path access-list 1 deny .*
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 89.110.29.198
+!
+!
+ip prefix-list lab101 seq 5 deny 192.168.10.0/30
+ip prefix-list lab101 seq 20 permit 0.0.0.0/0 le 32
+ipv6 route ::/0 2A02:6B8:89:AC61:AC::12
+ipv6 router ospf 1
+ area 102 filter-list prefix lab101 in
+ default-information originate
+!
+!
+!
+ipv6 prefix-list lab101 seq 5 deny FDE8:8A:FC:1:10:A3::/124
+ipv6 prefix-list lab101 seq 25 permit ::/0 le 128
+route-map as301-in permit 10
+ set local-preference 250
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!         
+banner motd ^CUnautorized access is prohibited^C
+!
+line con 0
+ password 7 01100F175804
+ logging synchronous
+ login
+line aux 0
+line vty 0
+ password 7 02050D480809
+ login
+ transport input none
+line vty 1 4
+ login
+ transport input none
+!
+!
+end
