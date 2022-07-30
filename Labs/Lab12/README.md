@@ -388,6 +388,28 @@ ntp server 192.168.10.29
 ntp server 192.168.10.37
 ```
 
+С помощью команды show ntp packets проверим работоспособность ntp на R12 и R13:
+
+#### Маршрутизатор R12:
+
+```
+R12#show ntp packets 
+Ntp In packets   :  450 
+Ntp Out packets           :  636 
+Ntp bad version packets   :  0 
+Ntp protocol error packets:  0 
+```
+
+#### Маршрутизатор R13:
+
+```
+R13#show ntp packets 
+Ntp In packets   :  319 
+Ntp Out packets           :  535 
+Ntp bad version packets   :  0 
+Ntp protocol error packets:  0 
+```
+
 С помощью команд show ntp associations и show ntp status проверим синхронизацию времени:
 
 #### Маршрутизатор R20:
