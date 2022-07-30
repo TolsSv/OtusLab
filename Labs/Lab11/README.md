@@ -365,6 +365,42 @@ Originating default network 0.0.0.0
 Total number of prefixes 0 
 ```
 
+Также добавим дублирующее правило на R14 для приема обновлений от R22. В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R14:
+
+```
+!
+router bgp 1001
+ bgp router-id 14.14.14.14
+ bgp log-neighbor-changes
+ neighbor 15.15.15.15 remote-as 1001
+ neighbor 15.15.15.15 update-source Loopback0
+ neighbor 2A02:6B8:89:AC61:AC::2 remote-as 101
+ neighbor 89.110.29.194 remote-as 101
+ !
+ address-family ipv4
+  neighbor 15.15.15.15 activate
+  neighbor 15.15.15.15 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::2 activate
+  neighbor 2A02:6B8:89:AC61:AC::2 filter-list 1 in
+  neighbor 89.110.29.194 activate
+  neighbor 89.110.29.194 route-map map-in in
+  neighbor 89.110.29.194 filter-list 1 out
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 15.15.15.15 activate
+  neighbor 2A02:6B8:89:AC61:AC::2 activate
+ exit-address-family
+!
+ip prefix-list default seq 10 permit 0.0.0.0/0
+!
+route-map map-in permit 10
+ match ip address prefix-list default
+!
+```
+
 ## Часть 4. Настройка провайдера Ламас так, чтобы в офис Москва отдавался только маршрут по умолчанию и префикс офиса С.-Петербург
 
 На маршрутизаторе R21 необходимо создать prefix-list куда попадает маршрут по умолчанию и префикс офиса С.-Петербург, создать route-map по этому prefix-list, назначить route-map и настроить default-originate на соседа R15.
@@ -462,4 +498,35 @@ Originating default network 0.0.0.0
  *>  89.110.29.228/30 89.110.29.210            0             0 520 i
 
 Total number of prefixes 2 
+```
+Также добавим дублирующее правило на R15 для приема обновлений от R21. В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R15:
+
+```
+address-family ipv4
+  neighbor 14.14.14.14 activate
+  neighbor 14.14.14.14 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 filter-list 1 out
+  neighbor 89.110.29.198 activate
+  neighbor 89.110.29.198 route-map as301-in in
+  neighbor 89.110.29.198 filter-list 1 out
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 14.14.14.14 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 route-map as301-in in
+  neighbor 2A02:6B8:89:AC61:AC::12 filter-list 1 out
+ exit-address-family       
+!
+ip prefix-list default seq 20 permit 89.110.29.228/30
+ip prefix-list default seq 30 permit 89.110.29.224/30
+ip prefix-list default seq 40 permit 0.0.0.0/0
+!
+route-map as301-in permit 10
+ match ip address prefix-list default
+ set local-preference 250
+!
 ```
