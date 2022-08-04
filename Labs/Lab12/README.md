@@ -197,50 +197,64 @@ icmp 89.110.29.197:6   192.168.10.6:6     89.110.29.206:6    89.110.29.206:6
 
 ## Часть 2. Настройка NAT(PAT) на R18
 
-На маршрутизаторах R14 и R15 необходимо создать и назначить на интерфейс в сторону провайдера as-path фильтр разрешающий анонсировать update только о своих внутренних подсетях. 
+На маршрутизаторе R18 необходимо настроить список доступа соответствующий внутренним частным адресам Санкт-Петербурга, настроим трансляцию из созданного списка доступа в 5 адресов из пула внешних адресов Санкт-Петербурга(80.80.195.64/26), настроим внешние для nat интерфейсы и внутренние, добавим в распростроняемые с помощью bgp адреса пул nat адресов и распространим пул адресов по bgp. 
 
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
+В выводе running-config маршрутизаторов появятся настройки:
+
+#### Маршрутизатор R18:
+
+```
+!
+interface Ethernet0/0
+ ip address 192.168.18.133 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ipv6 address FE80::18 link-local
+ ipv6 address FDE8:8A:FC:1:18::133/124
+!
+interface Ethernet0/1
+ ip address 192.168.18.129 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ipv6 address FE80::18 link-local
+ ipv6 address FDE8:8A:FC:1:18::129/124
+!
+interface Ethernet0/2
+ ip address 89.110.29.230 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::18 link-local
+ ipv6 address 2A02:6B8:89:AC61:AC::92/124
+!
+interface Ethernet0/3
+ ip address 89.110.29.226 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::18 link-local
+ ipv6 address 2A02:6B8:89:AC61:AC::82/124
+!
+ip nat pool NAT 80.80.195.65 80.80.195.69 netmask 255.255.255.192
+ip nat inside source list 2 pool NAT overload
+!
+ip prefix-list lab_out seq 5 permit 80.80.195.64/26
+!
+access-list 2 permit 192.168.18.0 0.0.0.255
+```
+
+
+
+Но почему-то R18 не распространяет пул внешних адресов nat на bgp соседей и соответственно nat не работает:
 
 #### Маршрутизатор R14:
 
 ```
- 
+R18#sh ip bgp neighbors 89.110.29.225 advertised-routes 
+
+Total number of prefixes 0 
+R18#sh ip bgp neighbors 89.110.29.229 advertised-routes 
+
+Total number of prefixes 0 
 ```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
-Настроим as-filter. В выводе running-config маршрутизаторов появятся настройки:
-
-#### Маршрутизатор R14:
-
-```
-
-```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes снова проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
-
-#### Маршрутизатор R14:
-
-```
-
-```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
 
 ## Часть 3. Настройка статического NAT для R20
 
