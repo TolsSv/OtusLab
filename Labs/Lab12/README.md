@@ -31,50 +31,169 @@
 
 ## Часть 1. Настройка NAT(PAT) на R14 и R15
 
-На маршрутизаторах R14 и R15 необходимо создать и назначить на интерфейс в сторону провайдера as-path фильтр разрешающий анонсировать update только о своих внутренних подсетях. 
+На маршрутизаторах R14 и R15 необходимо настроить список доступа соответствующий внутренним частным адресам Москвы, настроим трансляцию из созданного списка доступа в внешний интерфейс роутера(трансляция в ip адрес внешнего интерфейса роутера), настроим внешние для nat интерфейсы и внутренние. 
 
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
+В выводе running-config маршрутизаторов появятся настройки:
 
 #### Маршрутизатор R14:
 
 ```
- 
+!
+interface Ethernet0/0
+ ip address 192.168.10.9 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+ ipv6 address FE80::14 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:21/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/1
+ ip address 192.168.10.17 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+ ipv6 address FE80::14 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:41/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/2
+ ip address 89.110.29.193 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::14 link-local
+ ipv6 address 2A02:6B8:89:AC61:AC::1/124
+!
+interface Ethernet0/3
+ ip address 192.168.10.1 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 101
+ ipv6 address FE80::14 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:1/124
+ ipv6 ospf 1 area 101
+!
+ip nat inside source list 1 interface Ethernet0/2 overload
+!
+access-list 1 permit 192.168.10.0 0.0.0.255
 ```
 
 #### Маршрутизатор R15:
 
 ```
-
+!
+interface Ethernet0/0
+ ip address 192.168.10.13 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+ ipv6 address FE80::15 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:31/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/1
+ ip address 192.168.10.21 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+ ipv6 address FE80::15 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:51/124
+ ipv6 ospf 1 area 0
+!
+interface Ethernet0/2
+ ip address 89.110.29.197 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ ipv6 address FE80::15 link-local
+ ipv6 address 2A02:6B8:89:AC61:AC::11/124
+!
+interface Ethernet0/3
+ ip address 192.168.10.5 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 102
+ ipv6 address FE80::15 link-local
+ ipv6 address FDE8:8A:FC:1:10:A3:0:11/124
+ ipv6 ospf 1 area 102
+!
+ip nat inside source list 2 interface Ethernet0/2 overload
+!
+access-list 2 permit 192.168.10.0 0.0.0.255
 ```
 
-Настроим as-filter. В выводе running-config маршрутизаторов появятся настройки:
+С помощью ping с R19 и R20 создадим трафик из внутренней сети во внешнию с использованием nat и проверим с помощью show ip nat statistics и show ip nat translations на R14 и R15 трансляции адресов:
+
+#### Маршрутизатор R19:
+
+```
+R19#ping 89.110.29.206
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.206, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+```
+
+#### Маршрутизатор R20:
+
+```
+R20#ping 89.110.29.206
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.206, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+```
 
 #### Маршрутизатор R14:
 
 ```
+R14#show ip nat statistics 
+Total active translations: 1 (0 static, 1 dynamic; 1 extended)
+Peak translations: 2, occurred 00:00:15 ago
+Outside interfaces:
+  Ethernet0/2
+Inside interfaces: 
+  Ethernet0/0, Ethernet0/1, Ethernet0/3
+Hits: 35  Misses: 0
+CEF Translated packets: 35, CEF Punted packets: 0
+Expired translations: 3
+Dynamic mappings:
+-- Inside Source
+[Id: 3] access-list 1 interface Ethernet0/2 refcount 1
 
+Total doors: 0
+Appl doors: 0
+Normal doors: 0
+Queued Packets: 0
+R14#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 89.110.29.193:1   192.168.10.2:1     89.110.29.206:1    89.110.29.206:1
 ```
 
 #### Маршрутизатор R15:
 
 ```
+R15#show ip nat statistics 
+Total active translations: 2 (0 static, 2 dynamic; 2 extended)
+Peak translations: 2, occurred 00:29:59 ago
+Outside interfaces:
+  Ethernet0/2
+Inside interfaces: 
+  Ethernet0/0, Ethernet0/1, Ethernet0/3
+Hits: 60  Misses: 0
+CEF Translated packets: 60, CEF Punted packets: 0
+Expired translations: 4
+Dynamic mappings:
+-- Inside Source
+[Id: 4] access-list 2 interface Ethernet0/2 refcount 2
 
+Total doors: 0
+Appl doors: 0
+Normal doors: 0
+Queued Packets: 0
+R15#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 89.110.29.197:6   192.168.10.6:6     89.110.29.206:6    89.110.29.206:6
 ```
-
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes снова проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
-
-#### Маршрутизатор R14:
-
-```
-
-```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
 
 ## Часть 2. Настройка NAT(PAT) на R18
 
