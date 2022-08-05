@@ -268,19 +268,45 @@ ip prefix-list lab_out seq 5 permit 80.80.195.64/26
 access-list 2 permit 192.168.18.0 0.0.0.255
 ```
 
-
-
 С помощью ping с R16 создадим трафик из внутренней сети во внешнию с использованием nat и проверим с помощью show ip nat statistics и show ip nat translations на R18 трансляции адресов:
 
-#### Маршрутизатор R14:
+#### Маршрутизатор R16:
 
 ```
-R18#sh ip bgp neighbors 89.110.29.225 advertised-routes 
+R16#ping 89.110.29.229
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.229, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+```
 
-Total number of prefixes 0 
-R18#sh ip bgp neighbors 89.110.29.229 advertised-routes 
+#### Маршрутизатор R18:
+```
+R18#sh ip nat statistics 
+Total active translations: 1 (0 static, 1 dynamic; 1 extended)
+Peak translations: 1, occurred 23:32:17 ago
+Outside interfaces:
+  Ethernet0/2, Ethernet0/3
+Inside interfaces: 
+  Ethernet0/0, Ethernet0/1
+Hits: 35  Misses: 0
+CEF Translated packets: 35, CEF Punted packets: 0
+Expired translations: 4
+Dynamic mappings:
+-- Inside Source
+[Id: 1] access-list 2 pool NAT refcount 1
+ pool NAT: netmask 255.255.255.192
+start 80.80.195.65 end 80.80.195.69
+type generic, total addresses 5, allocated 1 (20%), misses 0
 
-Total number of prefixes 0 
+Total doors: 0
+Appl doors: 0
+Normal doors: 0
+Queued Packets: 0
+R18#sh ip nat tr         
+R18#sh ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 80.80.195.67:5    192.168.18.134:5   89.110.29.229:5    89.110.29.229:5
 ```
 
 ## Часть 3. Настройка статического NAT для R20
