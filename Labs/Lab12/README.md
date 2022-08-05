@@ -197,7 +197,7 @@ icmp 89.110.29.197:6   192.168.10.6:6     89.110.29.206:6    89.110.29.206:6
 
 ## Часть 2. Настройка NAT(PAT) на R18
 
-На маршрутизаторе R18 необходимо настроить список доступа соответствующий внутренним частным адресам Санкт-Петербурга, настроим трансляцию из созданного списка доступа в 5 адресов из пула внешних адресов Санкт-Петербурга(80.80.195.64/26), настроим внешние для nat интерфейсы и внутренние, добавим в распростроняемые с помощью bgp адреса пул nat адресов и распространим пул адресов по bgp. 
+На маршрутизаторе R18 необходимо настроить список доступа соответствующий внутренним частным адресам Санкт-Петербурга, настроим трансляцию из созданного списка доступа в 5 адресов из пула внешних адресов Санкт-Петербурга(80.80.195.64/26), настроим внешние для nat интерфейсы и внутренние, добавим в распростроняемые с помощью bgp адреса пул nat адресов, распространим пул адресов по bgp и настроим маршрут в пул nat адречов в null0. 
 
 В выводе running-config маршрутизаторов появятся настройки:
 
@@ -233,8 +233,35 @@ interface Ethernet0/3
  ipv6 address FE80::18 link-local
  ipv6 address 2A02:6B8:89:AC61:AC::82/124
 !
+router bgp 2042
+ bgp router-id 18.18.18.18
+ bgp log-neighbor-changes
+ neighbor 2A02:6B8:89:AC61:AC::81 remote-as 520
+ neighbor 2A02:6B8:89:AC61:AC::91 remote-as 520
+ neighbor 89.110.29.225 remote-as 520
+ neighbor 89.110.29.229 remote-as 520
+ !
+ address-family ipv4
+  network 80.80.195.64 mask 255.255.255.192
+  neighbor 2A02:6B8:89:AC61:AC::81 activate
+  neighbor 2A02:6B8:89:AC61:AC::91 activate
+  neighbor 89.110.29.225 activate
+  neighbor 89.110.29.225 prefix-list lab_out out
+  neighbor 89.110.29.229 activate
+  neighbor 89.110.29.229 prefix-list lab_out out
+  maximum-paths 2
+ exit-address-family
+ !
+ address-family ipv6
+  maximum-paths 2
+  neighbor 2A02:6B8:89:AC61:AC::81 activate
+  neighbor 2A02:6B8:89:AC61:AC::91 activate
+ exit-address-family
+!
+
 ip nat pool NAT 80.80.195.65 80.80.195.69 netmask 255.255.255.192
 ip nat inside source list 2 pool NAT overload
+ip route 80.80.195.64 255.255.255.192 Null0
 !
 ip prefix-list lab_out seq 5 permit 80.80.195.64/26
 !
@@ -243,7 +270,7 @@ access-list 2 permit 192.168.18.0 0.0.0.255
 
 
 
-Но почему-то R18 не распространяет пул внешних адресов nat на bgp соседей и соответственно nat не работает:
+С помощью ping с R16 создадим трафик из внутренней сети во внешнию с использованием nat и проверим с помощью show ip nat statistics и show ip nat translations на R18 трансляции адресов:
 
 #### Маршрутизатор R14:
 
