@@ -385,50 +385,80 @@ icmp 80.80.195.2:16    192.168.10.6:16    89.110.29.198:16   89.110.29.198:16
 
 ## Часть 4. Настройка статического NAT для R19
 
-На маршрутизаторах R14 и R15 необходимо создать и назначить на интерфейс в сторону провайдера as-path фильтр разрешающий анонсировать update только о своих внутренних подсетях. 
+На маршрутизаторе R14 необходимо настроить трансляцию из адреса R19 во внешний адрес 80.80.195.130/26 на порт 22 (проброс портов), добавим в распростроняемые с помощью bgp адреса пула внешних адресов 80.80.195.128/26 и настроим маршрут в пул nat адресов в null0. 
 
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
-
-#### Маршрутизатор R14:
-
-```
- 
-```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
-Настроим as-filter. В выводе running-config маршрутизаторов появятся настройки:
+В выводе running-config маршрутизаторов появятся настройки: 
 
 #### Маршрутизатор R14:
 
 ```
+ !
+router bgp 1001
+ bgp router-id 14.14.14.14
+ bgp log-neighbor-changes
+ neighbor 15.15.15.15 remote-as 1001
+ neighbor 15.15.15.15 update-source Loopback0
+ neighbor 2A02:6B8:89:AC61:AC::2 remote-as 101
+ neighbor 89.110.29.194 remote-as 101
+ !
+ address-family ipv4
+  network 80.80.195.128 mask 255.255.255.192
+  neighbor 15.15.15.15 activate
+  neighbor 15.15.15.15 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::2 activate
+  neighbor 2A02:6B8:89:AC61:AC::2 filter-list 1 in
+  neighbor 89.110.29.194 activate
+  neighbor 89.110.29.194 route-map map-in in
+  neighbor 89.110.29.194 filter-list 1 out
+ exit-address-family
+ !
+ip route 80.80.195.128 255.255.255.192 Null0
 
+!
+ip prefix-list default seq 10 permit 0.0.0.0/0
+ip prefix-list default seq 20 permit 80.80.195.128/26
 ```
 
-#### Маршрутизатор R15:
+С помощью ping с АРМ VPC8 создадим трафик с 22 порта на маршрутизатор R19 с использованием nat и проверим с помощью show ip nat statistics и show ip nat translations на R14 трансляции адресов:
+
+#### АРМ VPC8:
 
 ```
+VPCS> ping 80.80.195.130 -3 -p 22
 
+Connect   22@80.80.195.130 RST returned
+Connect   22@80.80.195.130 RST returned
+Connect   22@80.80.195.130 RST returned
+Connect   22@80.80.195.130 RST returned
+Connect   22@80.80.195.130 RST returned
 ```
-
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes снова проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
 
 #### Маршрутизатор R14:
 
 ```
+R14#show ip nat statistics 
+Total active translations: 2 (1 static, 1 dynamic; 2 extended)
+Peak translations: 2, occurred 3d18h ago
+Outside interfaces:
+  Ethernet0/2
+Inside interfaces: 
+  Ethernet0/0, Ethernet0/1, Ethernet0/3
+Hits: 55  Misses: 0
+CEF Translated packets: 55, CEF Punted packets: 0
+Expired translations: 5
+Dynamic mappings:
+-- Inside Source
+[Id: 3] access-list 1 interface Ethernet0/2 refcount 0
 
+Total doors: 0
+Appl doors: 0
+Normal doors: 0
+Queued Packets: 0
+R14#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+tcp 80.80.195.130:22   192.168.10.2:22    80.80.195.67:35759 80.80.195.67:35759
+tcp 80.80.195.130:22   192.168.10.2:22    ---                ---
 ```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
 
 ## Часть 5*. Настроика статического NAT(PAT) для офиса Чокурдах
 
