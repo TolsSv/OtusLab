@@ -197,7 +197,7 @@ icmp 89.110.29.197:6   192.168.10.6:6     89.110.29.206:6    89.110.29.206:6
 
 ## Часть 2. Настройка NAT(PAT) на R18
 
-На маршрутизаторе R18 необходимо настроить список доступа соответствующий внутренним частным адресам Санкт-Петербурга, настроим трансляцию из созданного списка доступа в 5 адресов из пула внешних адресов Санкт-Петербурга(80.80.195.64/26), настроим внешние для nat интерфейсы и внутренние, добавим в распростроняемые с помощью bgp адреса пул nat адресов, распространим пул адресов по bgp и настроим маршрут в пул nat адречов в null0. 
+На маршрутизаторе R18 необходимо настроить список доступа соответствующий внутренним частным адресам Санкт-Петербурга, настроим трансляцию из созданного списка доступа в 5 адресов из пула внешних адресов Санкт-Петербурга(80.80.195.64/26), настроим внешние для nat интерфейсы и внутренние, добавим в распростроняемые с помощью bgp адреса пул nat адресов и настроим маршрут в пул nat адресов в null0. 
 
 В выводе running-config маршрутизаторов появятся настройки:
 
@@ -311,50 +311,77 @@ icmp 80.80.195.67:5    192.168.18.134:5   89.110.29.229:5    89.110.29.229:5
 
 ## Часть 3. Настройка статического NAT для R20
 
-На маршрутизаторах R14 и R15 необходимо создать и назначить на интерфейс в сторону провайдера as-path фильтр разрешающий анонсировать update только о своих внутренних подсетях. 
+На маршрутизаторе R15 необходимо настроить трансляцию из адреса R20 во внешний адрес 80.80.195.2/26, добавим в распростроняемые с помощью bgp адреса пула внешних адресов 80.80.195.0/26 и настроим маршрут в пул nat адресов в null0. 
 
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
+В выводе running-config маршрутизаторов появятся настройки: 
 
-#### Маршрутизатор R14:
+#### Маршрутизатор R15:
 
 ```
- 
+!
+router bgp 1001
+ bgp router-id 15.15.15.15
+ bgp log-neighbor-changes
+ neighbor 14.14.14.14 remote-as 1001
+ neighbor 14.14.14.14 update-source Loopback0
+ neighbor 2A02:6B8:89:AC61:AC::12 remote-as 301
+ neighbor 89.110.29.198 remote-as 301
+ !
+ address-family ipv4
+  network 80.80.195.0 mask 255.255.255.192
+  neighbor 14.14.14.14 activate
+  neighbor 14.14.14.14 next-hop-self
+  neighbor 2A02:6B8:89:AC61:AC::12 activate
+  neighbor 2A02:6B8:89:AC61:AC::12 filter-list 1 out
+  neighbor 89.110.29.198 activate
+  neighbor 89.110.29.198 prefix-list lab12 out
+  neighbor 89.110.29.198 route-map as301-in in
+ exit-address-family
+!
+ip nat inside source static 192.168.10.6 80.80.195.2
+ip route 80.80.195.0 255.255.255.192 Null0
+```
+
+С помощью ping с R20 создадим трафик из внутренней сети во внешнию с использованием nat и проверим с помощью show ip nat statistics и show ip nat translations на R15 трансляции адресов:
+
+#### Маршрутизатор R20:
+
+```
+R20#ping 89.110.29.198
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 89.110.29.198, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ```
 
 #### Маршрутизатор R15:
 
 ```
+R15#show ip nat statistics 
+Aug  8 06:50:16.062: %IPRT-3-RIB_LOOP: Resolution loop formed by routes in RIB
+R15#show ip nat statistics   
+Total active translations: 2 (1 static, 1 dynamic; 1 extended)
+Peak translations: 2, occurred 00:00:40 ago
+Outside interfaces:
+  Ethernet0/2
+Inside interfaces: 
+  Ethernet0/0, Ethernet0/1, Ethernet0/3
+Hits: 10  Misses: 0
+CEF Translated packets: 10, CEF Punted packets: 0
+Expired translations: 0
+Dynamic mappings:
+-- Inside Source
+[Id: 1] access-list 2 interface Ethernet0/2 refcount 0
 
+Total doors: 0
+Appl doors: 0
+Normal doors: 0
+Queued Packets: 0
+R15#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 80.80.195.2:16    192.168.10.6:16    89.110.29.198:16   89.110.29.198:16
+--- 80.80.195.2        192.168.10.6       ---                ---
 ```
-
-Настроим as-filter. В выводе running-config маршрутизаторов появятся настройки:
-
-#### Маршрутизатор R14:
-
-```
-
-```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
-С помощью команды show ip  bgp neighbors A.B.C.D advertised-routes снова проверим какие маршруты в сторону провайдеров анонсируют R14 и R15:
-
-#### Маршрутизатор R14:
-
-```
-
-```
-
-#### Маршрутизатор R15:
-
-```
-
-```
-
 
 ## Часть 4. Настройка статического NAT для R19
 
